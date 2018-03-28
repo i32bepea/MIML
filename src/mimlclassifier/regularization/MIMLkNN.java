@@ -76,43 +76,82 @@ public class MIMLkNN extends MIMLClassifier {
 		calculateReferenceMatrix();
 		
 		for(int i = 0; i < d_size; ++i) {
-		
-			int[] references = getReferences(i);
-			int[] citers = getCiters(i);
-
-			// Union references and citers sets
-			Set<Integer> set = new HashSet<Integer>();
-			
-		    for (int j = 0; j < references.length; j++)
-		        set.add(references[j]);
-		    for (int j = 0; j < citers.length; j++)
-		        set.add(citers[j]);
-		    
-		    Integer[] union = set.toArray(new Integer[set.size()]);		    
+		    Integer[] neighbors = getUnionNeighbors(i);		    
 		    // Update matrices
-		    phi_matrix[i] = calculateRecordLabel(union).clone();
+		    phi_matrix[i] = calculateRecordLabel(neighbors).clone();
 		    t_matrix[i] = getBagLabels(i).clone(); 
-		    
-			System.out.println("+Referencias mochila " + i);
-			System.out.println(Arrays.toString(references)+"\n");
-			System.out.println("+Citas mochila " + i);
-			System.out.println(Arrays.toString(citers)+"\n");
 		}
 		
 		weights_matrix = getWeightsMatrix();
 		
+		System.out.println("+Matriz de pesos:");
 		for(int i = 0; i < numLabels; ++i)
 			System.out.println(Arrays.toString(weights_matrix[i]));
 		
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		System.out.println("-Tiempo transcurrido: " + elapsedTime);
+		System.out.println("\n-Tiempo transcurrido en crear el modelo: " + elapsedTime);
 	}
 
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public MultiLabelOutput makePredictionFinal(Bag instance) throws Exception {
+		// Create a new distances matrix 
+		double[][] distanceMatrixCopy = distance_matrix.clone();
+		distance_matrix = new double[d_size+1][d_size+1];
+		double[] distances = new double[d_size];
+		
+		for(int i = 0; i < d_size; ++i) {
+			for(int j = i; j < d_size; ++j) {
+				// Fill distance matrix
+				double distance = distanceMatrixCopy[i][j];
+				distance_matrix[i][j] = distance;
+				distance_matrix[j][i] = distance;
+			}
+		}
+		
+		for(int i = 0; i < d_size; ++i) {
+			double distance = metric.distance(instance, dataset.getBag(i));
+			distances[i] = distance;
+			// Upgrade distance matrix;
+			distance_matrix[i][d_size] = distance;
+			distance_matrix[d_size][i] = distance;
+		}
+		//Update d_size to calculate references matrix
+		d_size++;
+		System.out.println("Calculando referencias y citas...");
+		calculateReferenceMatrix();
+		//Update d_size again
+		d_size--;
+		
+		Integer[] neighbors = getUnionNeighbors(d_size);
+		double[] recordLabel =  calculateRecordLabel(neighbors);
+		int[] predictedLabel = new int[numLabels];
+		
+		for(int i = 0; i < numLabels; ++i) {
+			double[] column = new double[numLabels];
+			
+			for(int j = 0; j < numLabels; ++j)
+				column[i] = weights_matrix[j][i];
+			
+			double decision = linearClassifier(column, recordLabel);
+			if (decision > 0)
+				predictedLabel[i] = 1;
+		}
+				
+		System.out.print("Clases predichas: [");
+		for(int i = 0; i < numLabels; ++i)
+			System.out.print(predictedLabel[i] + ",");
+		System.out.println("]");
+				
+		
+		MultiLabelOutput finalDecision = new MultiLabelOutput(predictedLabel);
+		distance_matrix = distanceMatrixCopy.clone();
+				
+		return finalDecision;
 	}
 	
 	private void calculateDatasetDistances() throws Exception {
@@ -133,26 +172,8 @@ public class MIMLkNN extends MIMLClassifier {
 		}
 	}
 	
-	private int[] calculateBagReferences(int idxBag) throws Exception {
-		// Nearest neighbors of the selected bag
-		int[] nearestNeighbors = new int[num_references];
-		// Store indices in priority queue, sorted by distance to selected bag
-		PriorityQueue<Integer> pq = new PriorityQueue<Integer>(d_size, 
-				(a, b) -> Double.compare(distance_matrix[idxBag][a], distance_matrix[idxBag][b]));
-		
-		for(int i = 0; i < d_size; ++i) {
-			if(i != idxBag)	
-				pq.add(i);
-		}
-		// Get the  R (num_references) nearest neighbors
-    	for (int i = 0; i < num_references; ++i) 
-    		nearestNeighbors[i] = pq.poll();
-   
-    	return nearestNeighbors;
-	}
-		
 	private void calculateReferenceMatrix() throws Exception {
-	
+		
 		ref_matrix = new int[d_size][d_size];
 		
 		for(int i = 0; i < d_size; ++i) {
@@ -160,6 +181,24 @@ public class MIMLkNN extends MIMLClassifier {
 			for(int j = 0; j < references.length; ++j) 
 				ref_matrix[i][references[j]] = 1;		
 		}
+	}
+	
+	private int[] calculateBagReferences(int indexBag) throws Exception {
+		// Nearest neighbors of the selected bag
+		int[] nearestNeighbors = new int[num_references];
+		// Store indices in priority queue, sorted by distance to selected bag
+		PriorityQueue<Integer> pq = new PriorityQueue<Integer>(d_size, 
+				(a, b) -> Double.compare(distance_matrix[indexBag][a], distance_matrix[indexBag][b]));
+		
+		for(int i = 0; i < d_size; ++i) {
+			if(i != indexBag)	
+				pq.add(i);
+		}
+		// Get the  R (num_references) nearest neighbors
+    	for (int i = 0; i < num_references; ++i) 
+    		nearestNeighbors[i] = pq.poll();
+   
+    	return nearestNeighbors;
 	}
 	
 	private int[] getReferences(int indexBag) {
@@ -180,11 +219,10 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		PriorityQueue<Integer> pq = new PriorityQueue<Integer>(num_references,
 				(a, b) -> Double.compare(distance_matrix[indexBag][a], distance_matrix[indexBag][b]));
-		
-		for(int i = 0; i < d_size; ++i) {
+	
+		for(int i = 0; i < d_size; ++i) 
 			if(ref_matrix[i][indexBag] == 1)
 				pq.add(i);
-		}
 		
 		int citers = (num_citers < pq.size()) ? num_citers : pq.size();
 		// Nearest citers of the selected bag
@@ -194,6 +232,28 @@ public class MIMLkNN extends MIMLClassifier {
 			nearestCiters[i] = pq.poll();
 		
 		return nearestCiters;
+	}
+	
+	private Integer[] getUnionNeighbors(int indexBag) {
+		
+		int[] references = getReferences(indexBag);
+		int[] citers = getCiters(indexBag);
+		/*
+		System.out.println("+Referencias mochila " + indexBag);
+		System.out.println(Arrays.toString(references));
+		System.out.println("+Citas mochila " + indexBag);
+		System.out.println(Arrays.toString(citers)+"\n");
+		*/
+		// Union references and citers sets
+		Set<Integer> set = new HashSet<Integer>();
+		
+	    for (int j = 0; j < references.length; j++)
+	        set.add(references[j]);
+	    for (int j = 0; j < citers.length; j++)
+	        set.add(citers[j]);
+	    
+	    Integer[] union = set.toArray(new Integer[set.size()]);	
+	    return union;
 	}
 	
 	private double[] calculateRecordLabel(Integer[] indices) {
@@ -228,31 +288,46 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		Matrix A = phiMatrixT.times(phiMatrix);
 		Matrix B = phiMatrixT.times(tMatrix);
+		Matrix inverseA;
 		
-		SingularValueDecomposition svd = A.svd();
-		Matrix S = svd.getS();
-		Matrix U = svd.getU();
-		Matrix V = svd.getV();
-		
-		double[][] sDouble = S.getArray();
-		double value;
-		double threshold = 10e-12;
-		
-		for(int i = 0; i < sDouble[0].length; ++i) {
-			value = sDouble[i][i];
-			if ( value < threshold)
-				sDouble[i][i] = 0;
-			else
-				sDouble[i][i] = 1.0/value;
+		if(A.det() == 0) {
+			SingularValueDecomposition svd = A.svd();
+			Matrix S = svd.getS();
+			Matrix U = svd.getU();
+			Matrix V = svd.getV();
+			
+			double[][] sDouble = S.getArray();
+			double value;
+			double threshold = 10e-12;
+			
+			for(int i = 0; i < sDouble[0].length; ++i) {
+				value = sDouble[i][i];
+				if ( value < threshold)
+					sDouble[i][i] = 0;
+				else
+					sDouble[i][i] = 1.0/value;
+			}
+			
+			S = new Matrix(sDouble);
+			inverseA = V.times(S);
+			inverseA = inverseA.times(U.transpose());		
 		}
-		
-		S = new Matrix(sDouble);
-		Matrix inverseA = V.times(S);
-		inverseA = inverseA.times(U.transpose());
-		
+		else
+			inverseA = A.inverse();
+
 		Matrix solution = inverseA.times(B);
 		
 		return solution.getArrayCopy();
+	}
+	
+	private double linearClassifier(double[] weights, double[] record) {
+		
+		double decision = 0.0;
+		
+		for(int i = 0; i < numLabels; ++i)
+			decision += weights[i]*record[i];
+		
+		return decision;
 	}
 	
 	/** Returns the number of citers considered to estimate the class prediction of tests bags*/

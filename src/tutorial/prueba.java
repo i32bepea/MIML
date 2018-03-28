@@ -25,6 +25,7 @@ import data.statistics.MILStatistics;
 import data.statistics.MLStatistics;
 import mimlclassifier.regularization.MIMLkNN;
 import mimlclassifier.regularization.averageHausdorff;
+import mulan.classifier.MultiLabelOutput;
 import mulan.data.InvalidDataFormatException;
 import mulan.data.MultiLabelInstances;
 import weka.core.Attribute;
@@ -64,30 +65,39 @@ public class prueba {
 			// String arffFileName = "data+File.separator+miml_text_data.arff";
 			// String xmlFileName = "data+File.separator+miml_text_data.xml";
 			
-			String name = "miml_03_data";
-
-			String arffFileName = "data" + File.separator + name + ".arff";
-			String xmlFileName = "data" + File.separator + name + ".xml";
-
+			String nameTrain = "miml_04_data";
+			String nameTest = "miml_text_data_random_20test";
+			
+			String arffFileTrain = "data" + File.separator + nameTrain + ".arff";
+			String xmlFileTrain = "data" + File.separator + nameTrain + ".xml";
+			//String arffFileTest = "data" + File.separator + nameTest + ".arff";
+			//String xmlFileTest = "data" + File.separator + nameTest + ".xml";
+			
 			// Parameter checking
-			if (arffFileName.isEmpty()) {
+			if (arffFileTrain.isEmpty()) {
 				System.out.println("Arff pathName must be specified.");
 				showUse();
 			}
-			if (xmlFileName.isEmpty()) {
+			if (xmlFileTrain.isEmpty()) {
 				System.out.println("Xml pathName must be specified.");
 				showUse();
 			}
 
 			// Loads the dataset
 			System.out.println("Loading the dataset....");
-			MIMLInstances mimlDataSet = new MIMLInstances(arffFileName, xmlFileName);
+			MIMLInstances mimlDataSetTrain = new MIMLInstances(arffFileTrain, xmlFileTrain);
+			//MIMLInstances mimlDataSetTest = new MIMLInstances(arffFileTrain, xmlFileTrain);
 					
 			averageHausdorff metric = new averageHausdorff();
 			MIMLkNN clasificador = new MIMLkNN(3,3, metric);
 			
 			clasificador.setDebug(true);
-			clasificador.build(mimlDataSet);
+			clasificador.build(mimlDataSetTrain);
+			
+			for(int i = 0; i < mimlDataSetTrain.getNumBags(); ++i) {
+				MultiLabelOutput pru = clasificador.makePredictionFinal(mimlDataSetTrain.getBag(i));	
+			}
+			
 			
 		} catch (InvalidDataFormatException e) {
 			e.printStackTrace();
