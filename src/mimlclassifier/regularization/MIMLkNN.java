@@ -95,10 +95,6 @@ public class MIMLkNN extends MIMLClassifier {
 
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException {
-		return null;
-	}
-	
-	public MultiLabelOutput makePredictionFinal(Bag instance) throws Exception {
 		// Create a new distances matrix 
 		double[][] distanceMatrixCopy = distance_matrix.clone();
 		distance_matrix = new double[d_size+1][d_size+1];
@@ -122,13 +118,14 @@ public class MIMLkNN extends MIMLClassifier {
 		}
 		//Update d_size to calculate references matrix
 		d_size++;
-		System.out.println("Calculando referencias y citas...");
+		//System.out.println("Calculando referencias y citas...");
 		calculateReferenceMatrix();
-		//Update d_size again
+		//Restore d_size value
 		d_size--;
 		
 		Integer[] neighbors = getUnionNeighbors(d_size);
 		double[] recordLabel =  calculateRecordLabel(neighbors);
+		
 		int[] predictedLabel = new int[numLabels];
 		
 		for(int i = 0; i < numLabels; ++i) {
@@ -141,11 +138,11 @@ public class MIMLkNN extends MIMLClassifier {
 			if (decision > 0)
 				predictedLabel[i] = 1;
 		}
-				
+		/*		
 		System.out.print("Clases predichas: [");
 		for(int i = 0; i < numLabels; ++i)
 			System.out.print(predictedLabel[i] + ",");
-		System.out.println("]");
+		System.out.println("]");*/
 				
 		
 		MultiLabelOutput finalDecision = new MultiLabelOutput(predictedLabel);
@@ -238,12 +235,7 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		int[] references = getReferences(indexBag);
 		int[] citers = getCiters(indexBag);
-		/*
-		System.out.println("+Referencias mochila " + indexBag);
-		System.out.println(Arrays.toString(references));
-		System.out.println("+Citas mochila " + indexBag);
-		System.out.println(Arrays.toString(citers)+"\n");
-		*/
+
 		// Union references and citers sets
 		Set<Integer> set = new HashSet<Integer>();
 		

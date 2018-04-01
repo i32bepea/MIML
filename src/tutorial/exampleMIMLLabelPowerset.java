@@ -53,8 +53,11 @@ public class exampleMIMLLabelPowerset {
 			// String arffFileNameTrain = Utils.getOption("f", args);
 			// String xmlFileName = Utils.getOption("x", args);
 
-			String arffFileNameTrain = "data" + File.separator + "miml_text_data_random_80train.arff";
-			String arffFileNameTest = "data" + File.separator + "miml_text_data_random_20test.arff";
+			String nameTrain = "miml_text_data_random_80train";
+			String nameTest = "miml_text_data_random_20test";
+			
+			String arffFileNameTrain = "data" + File.separator + nameTrain + ".arff";
+			String arffFileNameTest = "data" + File.separator + nameTest + ".arff";
 			String xmlFileName = "data" + File.separator + "miml_text_data.xml";
 
 			// Parameter checking

@@ -56,10 +56,13 @@ public class exampleMIMLBinaryRelevance {
 			// String arffFileNameTest = Utils.getOption("g",args);
 			// String xmlFileName = Utils.getOption("x", args);
 
-			String arffFileNameTrain = "MIML" + File.separator + "data" + File.separator + "miml_text_data_random_80train.arff";
-			String arffFileNameTest = "MIML" + File.separator + "data" + File.separator + "miml_text_data_random_20test.arff";
-			String xmlFileName = "MIML" + File.separator + "data" + File.separator + "miml_text_data.xml";
-
+			String nameTrain = "miml_text_data_random_80train";
+			String nameTest = "miml_text_data_random_20test";
+			
+			String arffFileNameTrain = "data" + File.separator + nameTrain + ".arff";
+			String arffFileNameTest = "data" + File.separator + nameTest + ".arff";
+			String xmlFileName = "data" + File.separator + "miml_text_data.xml";
+			
 			// Parameter checking
 			if (arffFileNameTrain.isEmpty()) {
 				System.out.println("Arff pathName must be specified.");
