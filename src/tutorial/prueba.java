@@ -17,9 +17,11 @@ package tutorial;
 
 import java.io.File;
 
+import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.regularization.MIMLkNN;
 import mimlclassifier.regularization.averageHausdorff;
+import mulan.classifier.MultiLabelOutput;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -85,6 +87,17 @@ public class prueba {
 			
 			clasificador.setDebug(true);
 			clasificador.build(mimlTrain);
+			/*
+			Bag bag = mimlTrain.getBag(1);
+			MultiLabelOutput prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			bag = mimlTrain.getBag(2);
+			prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			bag = mimlTrain.getBag(1053-27);
+			prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			*/
 			
 			// Performs a train-test evaluation
 			Evaluator evalTT = new Evaluator();

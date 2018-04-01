@@ -68,7 +68,7 @@ public class MIMLkNN extends MIMLClassifier {
 		t_matrix = new double[d_size][numLabels];
 		phi_matrix = new double[d_size][numLabels];
 		
-		long startTime = System.currentTimeMillis();
+		double startTime = System.currentTimeMillis();
 		
 		System.out.println("Calculando matriz de distancias...");
 		calculateDatasetDistances();
@@ -88,9 +88,9 @@ public class MIMLkNN extends MIMLClassifier {
 		for(int i = 0; i < numLabels; ++i)
 			System.out.println(Arrays.toString(weights_matrix[i]));
 		
-		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
-		System.out.println("\n-Tiempo transcurrido en crear el modelo: " + elapsedTime);
+		double stopTime = System.currentTimeMillis();
+		double elapsedTime = (stopTime - startTime)/1000;
+		System.out.println("\n-Tiempo transcurrido en crear el modelo: " + elapsedTime + " segundos");
 	}
 
 	@Override
@@ -98,7 +98,6 @@ public class MIMLkNN extends MIMLClassifier {
 		// Create a new distances matrix 
 		double[][] distanceMatrixCopy = distance_matrix.clone();
 		distance_matrix = new double[d_size+1][d_size+1];
-		double[] distances = new double[d_size];
 		
 		for(int i = 0; i < d_size; ++i) {
 			for(int j = i; j < d_size; ++j) {
@@ -111,7 +110,6 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		for(int i = 0; i < d_size; ++i) {
 			double distance = metric.distance(instance, dataset.getBag(i));
-			distances[i] = distance;
 			// Upgrade distance matrix;
 			distance_matrix[i][d_size] = distance;
 			distance_matrix[d_size][i] = distance;
@@ -132,7 +130,7 @@ public class MIMLkNN extends MIMLClassifier {
 			double[] column = new double[numLabels];
 			
 			for(int j = 0; j < numLabels; ++j)
-				column[i] = weights_matrix[j][i];
+				column[j] = weights_matrix[i][j];
 			
 			double decision = linearClassifier(column, recordLabel);
 			if (decision > 0)
@@ -280,33 +278,28 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		Matrix A = phiMatrixT.times(phiMatrix);
 		Matrix B = phiMatrixT.times(tMatrix);
-		Matrix inverseA;
 		
-		if(A.det() == 0) {
-			SingularValueDecomposition svd = A.svd();
-			Matrix S = svd.getS();
-			Matrix U = svd.getU();
-			Matrix V = svd.getV();
-			
-			double[][] sDouble = S.getArray();
-			double value;
-			double threshold = 10e-12;
-			
-			for(int i = 0; i < sDouble[0].length; ++i) {
-				value = sDouble[i][i];
-				if ( value < threshold)
-					sDouble[i][i] = 0;
-				else
-					sDouble[i][i] = 1.0/value;
-			}
-			
-			S = new Matrix(sDouble);
-			inverseA = V.times(S);
-			inverseA = inverseA.times(U.transpose());		
+		SingularValueDecomposition svd = A.svd();
+		Matrix S = svd.getS();
+		Matrix U = svd.getU();
+		Matrix V = svd.getV();
+		
+		double[][] sDouble = S.getArray();
+		double value;
+		double threshold = 10e-12;
+		
+		for(int i = 0; i < sDouble[0].length; ++i) {
+			value = sDouble[i][i];
+			if ( value < threshold)
+				sDouble[i][i] = 0;
+			else
+				sDouble[i][i] = 1.0/value;
 		}
-		else
-			inverseA = A.inverse();
-
+		
+		S = new Matrix(sDouble);
+		Matrix inverseA = V.times(S);
+		inverseA = inverseA.times(U.transpose());		
+	
 		Matrix solution = inverseA.times(B);
 		
 		return solution.getArrayCopy();
@@ -319,7 +312,12 @@ public class MIMLkNN extends MIMLClassifier {
 		for(int i = 0; i < numLabels; ++i)
 			decision += weights[i]*record[i];
 		
-		return decision;
+		//System.out.println(decision);
+		
+		if(decision > 0.3)
+			return 1.0;
+		else
+			return 0.0;
 	}
 	
 	/** Returns the number of citers considered to estimate the class prediction of tests bags*/
