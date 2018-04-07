@@ -25,6 +25,7 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
+import mulan.evaluation.MultipleEvaluation;
 
 /**
  * 
@@ -59,12 +60,12 @@ public class prueba {
 			// String arffFileName = "data+File.separator+miml_text_data.arff";
 			// String xmlFileName = "data+File.separator+miml_text_data.xml";
 			
-			String nameTrain = "miml_text_data_random_80train";
-			String nameTest = "miml_text_data_random_20test";
+			String nameTrain = "miml_03_data";
+			String nameTest = "miml_04_data";
 			
 			String arffFileTrain = "data" + File.separator + nameTrain + ".arff";
 			String arffFileTest = "data" + File.separator + nameTest + ".arff";
-			String xmlFileName = "data" + File.separator + "miml_text_data.xml";
+			String xmlFileName = "data" + File.separator + "miml_03_data.xml";
 			
 			// Parameter checking
 			if (arffFileTrain.isEmpty()) {
@@ -85,25 +86,35 @@ public class prueba {
 			averageHausdorff metric = new averageHausdorff();
 			MIMLkNN clasificador = new MIMLkNN(3,3, metric);
 			
-			clasificador.setDebug(true);
+			//clasificador.setDebug(true);
 			clasificador.build(mimlTrain);
 			/*
-			Bag bag = mimlTrain.getBag(1);
-			MultiLabelOutput prediction = clasificador.makePrediction(bag);
-			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
-			bag = mimlTrain.getBag(2);
-			prediction = clasificador.makePrediction(bag);
-			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
-			bag = mimlTrain.getBag(1053-27);
-			prediction = clasificador.makePrediction(bag);
-			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			Evaluator evalCV = new Evaluator();
+			MultipleEvaluation resultsCV;
+			int numFolds = 5;
+			System.out.println("\nPerforming " + numFolds + "-fold cross-validation:\n");
+			resultsCV = evalCV.crossValidate(clasificador, mimlTrain, numFolds);
+			System.out.println("\nResults on cross validation evaluation:\n" + resultsCV);
 			*/
-			
 			// Performs a train-test evaluation
+			
 			Evaluator evalTT = new Evaluator();
 			System.out.println("\nPerforming train-test evaluation:\n");
 			Evaluation resultsTT = evalTT.evaluate(clasificador, mimlTest, mimlTrain);
 			System.out.println("\nResults on train test evaluation:\n" + resultsTT);
+			
+			/*
+			Bag bag = mimlTrain.getBag(1266);
+			MultiLabelOutput prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			bag = mimlTrain.getBag(1267);
+			prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
+			bag = mimlTrain.getBag(1261);
+			prediction = clasificador.makePrediction(bag);
+			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());			
+			*/
+			
 			
 		} catch (InvalidDataFormatException e) {
 			e.printStackTrace();

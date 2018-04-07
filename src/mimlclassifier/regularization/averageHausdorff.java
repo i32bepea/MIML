@@ -10,12 +10,17 @@ import weka.core.EuclideanDistance;
 public class averageHausdorff implements IDistance {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2002702276955682922L;
+
+	/**
 	 * Get the average Hausdorff distance between two bags
 	 */
 	public double distance(Bag first, Bag second) throws Exception {
 		
 		EuclideanDistance euclideanDistance = new EuclideanDistance(first.getBagAsInstances());
-		euclideanDistance.setDontNormalize(true);
+		//euclideanDistance.setDontNormalize(true);
 		
 		int nInstances = second.getBagAsInstances().size();
 		
@@ -31,7 +36,7 @@ public class averageHausdorff implements IDistance {
 			for(Instance v : second.getBagAsInstances()) {
 				
 				double distance = euclideanDistance.distance(u, v);
-				
+
 				if ( distance < minDistance)
 					minDistance = distance;
 				

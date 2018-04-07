@@ -98,25 +98,18 @@ public class MIMLkNN extends MIMLClassifier {
 		// Create a new distances matrix 
 		double[][] distanceMatrixCopy = distance_matrix.clone();
 		distance_matrix = new double[d_size+1][d_size+1];
-		
+
 		for(int i = 0; i < d_size; ++i) {
-			for(int j = i; j < d_size; ++j) {
-				// Fill distance matrix
-				double distance = distanceMatrixCopy[i][j];
-				distance_matrix[i][j] = distance;
-				distance_matrix[j][i] = distance;
-			}
-		}
-		
-		for(int i = 0; i < d_size; ++i) {
+			// Fill distance matrix with previous values
+			System.arraycopy(distanceMatrixCopy[i], 0, distance_matrix[i], 0, d_size);
+			// Update distance matrix with the new bag's distances
 			double distance = metric.distance(instance, dataset.getBag(i));
-			// Upgrade distance matrix;
 			distance_matrix[i][d_size] = distance;
 			distance_matrix[d_size][i] = distance;
 		}
+
 		//Update d_size to calculate references matrix
 		d_size++;
-		//System.out.println("Calculando referencias y citas...");
 		calculateReferenceMatrix();
 		//Restore d_size value
 		d_size--;
@@ -124,26 +117,21 @@ public class MIMLkNN extends MIMLClassifier {
 		Integer[] neighbors = getUnionNeighbors(d_size);
 		double[] recordLabel =  calculateRecordLabel(neighbors);
 		
-		int[] predictedLabel = new int[numLabels];
+		double[] predictedLabel = new double[numLabels];
 		
+		//Apply linear classifier for each label
 		for(int i = 0; i < numLabels; ++i) {
 			double[] column = new double[numLabels];
-			
+			//Get columns of weight matrix
 			for(int j = 0; j < numLabels; ++j)
 				column[j] = weights_matrix[i][j];
 			
-			double decision = linearClassifier(column, recordLabel);
-			if (decision > 0)
-				predictedLabel[i] = 1;
+			boolean decision = linearClassifier(column, recordLabel);
+			predictedLabel[i] = (decision) ? 1.0 : 0.0;
 		}
-		/*		
-		System.out.print("Clases predichas: [");
-		for(int i = 0; i < numLabels; ++i)
-			System.out.print(predictedLabel[i] + ",");
-		System.out.println("]");*/
-				
 		
-		MultiLabelOutput finalDecision = new MultiLabelOutput(predictedLabel);
+		MultiLabelOutput finalDecision = new MultiLabelOutput(predictedLabel, 0.5);
+		//Restore original distance matrix
 		distance_matrix = distanceMatrixCopy.clone();
 				
 		return finalDecision;
@@ -276,6 +264,7 @@ public class MIMLkNN extends MIMLClassifier {
 		Matrix phiMatrix = new Matrix(phi_matrix);
 		Matrix phiMatrixT = phiMatrix.transpose();
 		
+		
 		Matrix A = phiMatrixT.times(phiMatrix);
 		Matrix B = phiMatrixT.times(tMatrix);
 		
@@ -287,7 +276,7 @@ public class MIMLkNN extends MIMLClassifier {
 		double[][] sDouble = S.getArray();
 		double value;
 		double threshold = 10e-12;
-		
+	
 		for(int i = 0; i < sDouble[0].length; ++i) {
 			value = sDouble[i][i];
 			if ( value < threshold)
@@ -297,27 +286,22 @@ public class MIMLkNN extends MIMLClassifier {
 		}
 		
 		S = new Matrix(sDouble);
-		Matrix inverseA = V.times(S);
-		inverseA = inverseA.times(U.transpose());		
-	
+		Matrix inverseA = V.transpose().times(S).times(U.transpose());
+		//inverseA = inverseA.times(U.transpose());		
+
 		Matrix solution = inverseA.times(B);
 		
 		return solution.getArrayCopy();
 	}
 	
-	private double linearClassifier(double[] weights, double[] record) {
+	private boolean linearClassifier(double[] weights, double[] record) {
 		
 		double decision = 0.0;
-		
+		//Multiply element by element
 		for(int i = 0; i < numLabels; ++i)
 			decision += weights[i]*record[i];
-		
-		//System.out.println(decision);
-		
-		if(decision > 0.3)
-			return 1.0;
-		else
-			return 0.0;
+			
+		return (decision > 0.0) ? true : false;
 	}
 	
 	/** Returns the number of citers considered to estimate the class prediction of tests bags*/
