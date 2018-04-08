@@ -15,6 +15,8 @@
 
 package mimlclassifier;
 
+import org.apache.commons.configuration.Configuration;
+
 import data.Bag;
 import data.MIMLInstances;
 import mulan.classifier.InvalidDataException;
@@ -65,6 +67,12 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag bag) throws Exception, InvalidDataException {
 		return BR.makePrediction(bag);
+	}
+
+	@Override
+	public void configure(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

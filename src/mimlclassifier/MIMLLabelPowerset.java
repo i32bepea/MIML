@@ -14,6 +14,8 @@
  */
 package mimlclassifier;
 
+import org.apache.commons.configuration.Configuration;
+
 import data.Bag;
 import data.MIMLInstances;
 import mulan.classifier.InvalidDataException;
@@ -62,6 +64,12 @@ public class MIMLLabelPowerset extends MIMLClassifier {
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag bag) throws Exception, InvalidDataException {
 		return LP.makePrediction(bag);
+	}
+
+	@Override
+	public void configure(Configuration configuration) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
+import org.apache.commons.configuration.Configuration;
+
 import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
@@ -51,6 +53,12 @@ public class MIMLkNN extends MIMLClassifier {
 		this.metric = metric;
 	}
 
+	/**
+	 *  No-arg constructor for xml configuration   
+	*/
+	public MIMLkNN() {
+	}
+	
 	@Override
 	protected void buildInternal(MIMLInstances trainingSet) throws Exception {
 		if (trainingSet == null) {
@@ -117,20 +125,22 @@ public class MIMLkNN extends MIMLClassifier {
 		Integer[] neighbors = getUnionNeighbors(d_size);
 		double[] recordLabel =  calculateRecordLabel(neighbors);
 		
-		double[] predictedLabel = new double[numLabels];
+		double[] confidences = new double[numLabels];
+		boolean[] predictions = new boolean[numLabels];
 		
 		//Apply linear classifier for each label
 		for(int i = 0; i < numLabels; ++i) {
 			double[] column = new double[numLabels];
 			//Get columns of weight matrix
 			for(int j = 0; j < numLabels; ++j)
-				column[j] = weights_matrix[i][j];
+				column[j] = weights_matrix[j][i];
 			
 			boolean decision = linearClassifier(column, recordLabel);
-			predictedLabel[i] = (decision) ? 1.0 : 0.0;
+			predictions[i] = decision;
+			confidences[i] = (decision) ? 1.0 : 0.0;
 		}
 		
-		MultiLabelOutput finalDecision = new MultiLabelOutput(predictedLabel, 0.5);
+		MultiLabelOutput finalDecision = new MultiLabelOutput(predictions);
 		//Restore original distance matrix
 		distance_matrix = distanceMatrixCopy.clone();
 				
@@ -322,6 +332,27 @@ public class MIMLkNN extends MIMLClassifier {
 	/**Sets the number of references considered to estimate the class prediction of tests bags*/
 	public void setNumReferences(int numReferences) {
 		this.num_references = numReferences;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void configure(Configuration configuration) {
+		
+		this.num_references = configuration.getInt("nReferences");
+		this.num_citers = configuration.getInt("nCiters");
+		
+		try {
+			//Get the name of the metric class
+			String metricName = configuration.getString("metric[@name]");
+			//Instance class
+			Class<? extends IDistance> metricClass = 
+					(Class <? extends IDistance>) Class.forName(metricName);
+			
+			this.metric = metricClass.newInstance();
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}	
 	}	
-	
 }

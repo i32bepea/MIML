@@ -26,6 +26,7 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
+import utils.IConfiguration;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
@@ -40,7 +41,7 @@ import weka.core.SerializedObject;
  *
  *
  */
-public abstract class MIMLClassifier implements MultiLabelLearner, Serializable {
+public abstract class MIMLClassifier implements IConfiguration, MultiLabelLearner, Serializable {
 
 	/** for serialization */
 	private static final long serialVersionUID = 1L;
@@ -72,7 +73,7 @@ public abstract class MIMLClassifier implements MultiLabelLearner, Serializable 
 
 	/** Whether debugging is on/off */
 	private boolean isDebug = false;
-
+	
 	@Override
 	public boolean isUpdatable() {
 		/** as default learners are assumed not to be updatable. */
