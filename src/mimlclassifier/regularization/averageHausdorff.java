@@ -51,23 +51,6 @@ public class averageHausdorff implements IDistance {
 		}
 		
 		double sumV = DoubleStream.of(minDistancesV).sum();
-		
-		/*
-		for(Instance v : second.getBagAsInstances()) {
-			
-			double minDistance = Double.MAX_VALUE;
-			
-			for(Instance u : first.getBagAsInstances()) {
-
-				double distance = euclideanDistance.distance(v, u);
-				
-				if ( distance < minDistance)
-					minDistance = distance;
-			}
-			
-			sumV += minDistance;
-		}
-		*/
 
 		return (sumU + sumV) / (first.getNumInstances() + second.getNumInstances());
 	}
