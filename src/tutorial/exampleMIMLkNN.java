@@ -28,17 +28,7 @@ import weka.core.Utils;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
-
-/**
- * 
- * Class implementing basic handling of MIML datasets.
- * 
- * @author Ana I.Reyes Melero
- * @author Eva Gibaja
- * @author Amelia Zafra
- * @version 20170507
- *
- */
+import mulan.evaluation.MultipleEvaluation;
 
 public class exampleMIMLkNN {
 	
@@ -51,12 +41,12 @@ public class exampleMIMLkNN {
 
 			String clsName = jobConf.getString("classifier[@name]");
 			
-			//Insantiate the classifier class used in the experiment
+			//Instantiate the classifier class used in the experiment
 			Class<? extends MIMLClassifier> clsClass = 
 					(Class <? extends MIMLClassifier>) Class.forName(clsName);
 			
 			classifier = clsClass.newInstance();
-			//Configure de classifier
+			//Configure the classifier
 			if(classifier instanceof MIMLClassifier)
 				((IConfiguration) classifier).configure(jobConf.subset("classifier"));
 		}
@@ -92,7 +82,6 @@ public class exampleMIMLkNN {
 	
 			String configFile = Utils.getOption("c", args);
 			Configuration jobConf = null;
-			System.out.println(configFile);
 			
 			//Try open job file
 			File jobFile = new File(configFile);
@@ -133,7 +122,7 @@ public class exampleMIMLkNN {
 			MIMLClassifier clasificador = loadClassifier(jobConf);
 			
 			clasificador.build(mimlTrain);
-			System.out.println(((MIMLkNN) clasificador).getNumReferences());
+			//System.out.println(((MIMLkNN) clasificador).getNumReferences());
 			/*
 			Evaluator evalCV = new Evaluator();
 			MultipleEvaluation resultsCV;
@@ -146,7 +135,7 @@ public class exampleMIMLkNN {
 			
 			Evaluator evalTT = new Evaluator();
 			System.out.println("\nPerforming train-test evaluation:\n");
-			Evaluation resultsTT = evalTT.evaluate(clasificador, mimlTest, mimlTrain);
+			Evaluation resultsTT = evalTT.evaluate(clasificador, mimlTrain, mimlTrain);
 			System.out.println("\nResults on train test evaluation:\n" + resultsTT);
 			
 			/*

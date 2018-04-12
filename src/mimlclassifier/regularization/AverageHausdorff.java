@@ -7,7 +7,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.EuclideanDistance;
 
-public class averageHausdorff implements IDistance {
+public class AverageHausdorff implements IDistance {
 	
 	/**
 	 * 

@@ -131,19 +131,27 @@ public class MIMLkNN extends MIMLClassifier {
 		//Apply linear classifier for each label
 		for(int i = 0; i < numLabels; ++i) {
 			double[] column = new double[numLabels];
-			//Get columns of weight matrix
+			
+			
+		  //Duda sobre el vector de pesos correspondientes sería la fila o la columna de la matriz
+		  //Get columns of weight matrix
 			for(int j = 0; j < numLabels; ++j)
 				column[j] = weights_matrix[j][i];
 			
+			//System.out.println("Columnas: " + Arrays.toString(column));
+			//Get weights
+			//column = weights_matrix[i];
+			//System.out.println("Filas: " + Arrays.toString(column) + "\n");
+
 			boolean decision = linearClassifier(column, recordLabel);
 			predictions[i] = decision;
 			confidences[i] = (decision) ? 1.0 : 0.0;
 		}
 		
-		MultiLabelOutput finalDecision = new MultiLabelOutput(predictions);
+		MultiLabelOutput finalDecision = new MultiLabelOutput(confidences);
 		//Restore original distance matrix
 		distance_matrix = distanceMatrixCopy.clone();
-				
+		//System.out.println(finalDecision.toString());
 		return finalDecision;
 	}
 	
@@ -160,7 +168,6 @@ public class MIMLkNN extends MIMLClassifier {
 				distance = metric.distance(first, second);
 				distance_matrix[i][j] = distance;
 				distance_matrix[j][i] = distance;
-				//System.out.println("Distancia ("+i+","+j+")" + distance);
 			}
 		}
 	}
@@ -263,7 +270,9 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		for(int i = 0; i< numLabels; ++i) {
 			if (dataset.getDataSet().instance(bagIndex).stringValue(labelIndices[i]).equals("1"))
-				labels[i] = 1;			
+				labels[i] = 1;
+			else
+				labels[i] = -1;
 		}	
 		return labels;
 	}
@@ -277,6 +286,17 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		Matrix A = phiMatrixT.times(phiMatrix);
 		Matrix B = phiMatrixT.times(tMatrix);
+		/*
+		double[][] aDouble = A.getArray();
+		
+		for(int i = 0; i < aDouble.length; ++i)
+			aDouble[i][i] += 1;
+		
+		A = new Matrix(aDouble);
+		Matrix inverseA = A.inverse();
+		Matrix result = inverseA.times(B);
+		return result.getArrayCopy();*/
+		
 		
 		SingularValueDecomposition svd = A.svd();
 		Matrix S = svd.getS();
@@ -285,7 +305,7 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		double[][] sDouble = S.getArray();
 		double value;
-		double threshold = 10e-12;
+		double threshold = 10e-10;
 	
 		for(int i = 0; i < sDouble[0].length; ++i) {
 			value = sDouble[i][i];
@@ -296,12 +316,13 @@ public class MIMLkNN extends MIMLClassifier {
 		}
 		
 		S = new Matrix(sDouble);
-		Matrix inverseA = V.transpose().times(S).times(U.transpose());
+		Matrix inverseA = V.times(S).times(U.transpose());
 		//inverseA = inverseA.times(U.transpose());		
 
 		Matrix solution = inverseA.times(B);
 		
 		return solution.getArrayCopy();
+		
 	}
 	
 	private boolean linearClassifier(double[] weights, double[] record) {
