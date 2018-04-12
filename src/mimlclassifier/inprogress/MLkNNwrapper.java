@@ -12,7 +12,7 @@ import mulan.data.MultiLabelInstances;
 import weka.core.DistanceFunction;
 import weka.core.Instance;
 
-public class MLkNNadapted extends MIMLClassifier{
+public class MLkNNwrapper extends MIMLClassifier{
 
 	/**
 	 * 
@@ -37,14 +37,14 @@ public class MLkNNadapted extends MIMLClassifier{
 	/** Classifier MLkNN */
 	private MLkNN classifier;
 
-	public MLkNNadapted(int num_references, double smooth, DistanceFunction metric) {
+	public MLkNNwrapper(int num_references, double smooth, DistanceFunction metric) {
 		this.num_references = num_references;
 		this.smooth = smooth;
 		this.metric = metric;
 		this.classifier = new MLkNN(num_references, smooth);
 	}
 	
-	public MLkNNadapted(DistanceFunction metric) {
+	public MLkNNwrapper(DistanceFunction metric) {
 		this.metric = metric;
 		this.classifier = new MLkNN(num_references, smooth);
 	}
@@ -52,7 +52,7 @@ public class MLkNNadapted extends MIMLClassifier{
 	/**
 	 *  No-arg constructor for xml configuration   
 	*/
-	public MLkNNadapted() {
+	public MLkNNwrapper() {
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -61,8 +61,7 @@ public class MLkNNadapted extends MIMLClassifier{
 		
 		dataset = trainingSet;
 		datasetConverted = dataset.getMLDataSet();
-		classifier.setDfunc(metric);
-		
+		classifier.setDfunc(metric);		
 		classifier.build(datasetConverted);
 	}
 
@@ -96,7 +95,32 @@ public class MLkNNadapted extends MIMLClassifier{
 			System.exit(1);
 		}
 		this.classifier = new MLkNN(num_references, smooth);
-	}	
+	}
+	
+	public double getSmooth() {
+		return smooth;
+	}
+
+	public void setSmooth(double smooth) {
+		this.smooth = smooth;
+	}
+
+	public int getNum_references() {
+		return num_references;
+	}
+
+	public void setNum_references(int num_references) {
+		this.num_references = num_references;
+	}
+
+	public DistanceFunction getMetric() {
+		return metric;
+	}
+
+	public void setMetric(DistanceFunction metric) {
+		this.metric = metric;
+	}
+
 
 
 }

@@ -20,11 +20,13 @@ import java.io.File;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.XMLConfiguration;
 
+import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
 import mimlclassifier.regularization.MIMLkNN;
 import utils.IConfiguration;
 import weka.core.Utils;
+import mulan.classifier.MultiLabelOutput;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -79,7 +81,8 @@ public class exampleMIMLkNN {
 			// String xmlFileName = Utils.getOption("x", args);
 			// String arffFileName = "data+File.separator+miml_text_data.arff";
 			// String xmlFileName = "data+File.separator+miml_text_data.xml";
-	
+			
+			//Ejecución => -c configurations/MIMLkNN.config
 			String configFile = Utils.getOption("c", args);
 			Configuration jobConf = null;
 			
@@ -119,34 +122,32 @@ public class exampleMIMLkNN {
 			MIMLInstances mimlTrain = new MIMLInstances(arffFileTrain, xmlFileName);
 			MIMLInstances mimlTest = new MIMLInstances(arffFileTest, xmlFileName);
 					
-			MIMLClassifier clasificador = loadClassifier(jobConf);
+			MIMLClassifier classifier = loadClassifier(jobConf);
 			
-			clasificador.build(mimlTrain);
-			//System.out.println(((MIMLkNN) clasificador).getNumReferences());
-			/*
 			Evaluator evalCV = new Evaluator();
 			MultipleEvaluation resultsCV;
 			int numFolds = 5;
 			System.out.println("\nPerforming " + numFolds + "-fold cross-validation:\n");
-			resultsCV = evalCV.crossValidate(clasificador, mimlTrain, numFolds);
+			resultsCV = evalCV.crossValidate(classifier, mimlTrain, numFolds);
 			System.out.println("\nResults on cross validation evaluation:\n" + resultsCV);
-			*/
-			// Performs a train-test evaluation
 			
+			// Performs a train-test evaluation
+			/*
+			classifier.build(mimlTrain);
 			Evaluator evalTT = new Evaluator();
 			System.out.println("\nPerforming train-test evaluation:\n");
-			Evaluation resultsTT = evalTT.evaluate(clasificador, mimlTrain, mimlTrain);
+			Evaluation resultsTT = evalTT.evaluate(classifier, mimlTest, mimlTrain);
 			System.out.println("\nResults on train test evaluation:\n" + resultsTT);
-			
+			*/
 			/*
 			Bag bag = mimlTrain.getBag(1266);
-			MultiLabelOutput prediction = clasificador.makePrediction(bag);
+			MultiLabelOutput prediction = classifier.makePrediction(bag);
 			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
 			bag = mimlTrain.getBag(1267);
-			prediction = clasificador.makePrediction(bag);
+			prediction = classifier.makePrediction(bag);
 			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());
 			bag = mimlTrain.getBag(1261);
-			prediction = clasificador.makePrediction(bag);
+			prediction = classifier.makePrediction(bag);
 			System.out.println("\nPrediction on a single instance:\n\t" + prediction.toString());			
 			*/
 			

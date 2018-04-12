@@ -1,9 +1,11 @@
 package mimlclassifier.regularization;
 
+import java.io.Serializable;
+
 import data.Bag;
 import weka.core.Instances;
 
-public interface IDistance extends java.io.Serializable{
+public interface IDistance extends Serializable{
 
 	/**
 	 * Get the average Hausdorff distance between two bags

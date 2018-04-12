@@ -5,6 +5,7 @@ import java.util.stream.DoubleStream;
 import data.Bag;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.neighboursearch.PerformanceStats;
 import weka.core.EuclideanDistance;
 
 public class AverageHausdorff implements IDistance {
@@ -20,7 +21,6 @@ public class AverageHausdorff implements IDistance {
 	public double distance(Bag first, Bag second) throws Exception {
 		
 		EuclideanDistance euclideanDistance = new EuclideanDistance(first.getBagAsInstances());
-		//euclideanDistance.setDontNormalize(true);
 		
 		int nInstances = second.getBagAsInstances().size();
 		

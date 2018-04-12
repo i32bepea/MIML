@@ -36,11 +36,17 @@ public class MIMLkNN extends MIMLClassifier {
 	/** Dataset size (number of bags) */
 	int d_size;
 	
+	/** Distance matrix between dataset's instances */
 	private double[][] distance_matrix;
+	
+	/** Instances' references matrix */
 	private int[][] ref_matrix;
 	
-	private double[][] weights_matrix;	
-	private double[][] t_matrix;	
+	/** Weights matrix */
+	private double[][] weights_matrix;
+	
+	private double[][] t_matrix;
+
 	private double[][] phi_matrix;	
 	
 	public MIMLkNN(int num_references, int num_citers, IDistance metric) {
@@ -103,6 +109,7 @@ public class MIMLkNN extends MIMLClassifier {
 
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException {
+		
 		// Create a new distances matrix 
 		double[][] distanceMatrixCopy = distance_matrix.clone();
 		distance_matrix = new double[d_size+1][d_size+1];
@@ -128,30 +135,23 @@ public class MIMLkNN extends MIMLClassifier {
 		double[] confidences = new double[numLabels];
 		boolean[] predictions = new boolean[numLabels];
 		
-		//Apply linear classifier for each label
+		//Apply linear classifier to each label
 		for(int i = 0; i < numLabels; ++i) {
 			double[] column = new double[numLabels];
 			
-			
-		  //Duda sobre el vector de pesos correspondientes sería la fila o la columna de la matriz
-		  //Get columns of weight matrix
+			//Get column of weights
 			for(int j = 0; j < numLabels; ++j)
 				column[j] = weights_matrix[j][i];
-			
-			//System.out.println("Columnas: " + Arrays.toString(column));
-			//Get weights
-			//column = weights_matrix[i];
-			//System.out.println("Filas: " + Arrays.toString(column) + "\n");
 
 			boolean decision = linearClassifier(column, recordLabel);
 			predictions[i] = decision;
 			confidences[i] = (decision) ? 1.0 : 0.0;
 		}
 		
-		MultiLabelOutput finalDecision = new MultiLabelOutput(confidences);
+		MultiLabelOutput finalDecision = new MultiLabelOutput(predictions,confidences);
 		//Restore original distance matrix
 		distance_matrix = distanceMatrixCopy.clone();
-		//System.out.println(finalDecision.toString());
+
 		return finalDecision;
 	}
 	
@@ -281,22 +281,10 @@ public class MIMLkNN extends MIMLClassifier {
 		
 		Matrix tMatrix = new Matrix(t_matrix);
 		Matrix phiMatrix = new Matrix(phi_matrix);
-		Matrix phiMatrixT = phiMatrix.transpose();
-		
+		Matrix phiMatrixT = phiMatrix.transpose();	
 		
 		Matrix A = phiMatrixT.times(phiMatrix);
-		Matrix B = phiMatrixT.times(tMatrix);
-		/*
-		double[][] aDouble = A.getArray();
-		
-		for(int i = 0; i < aDouble.length; ++i)
-			aDouble[i][i] += 1;
-		
-		A = new Matrix(aDouble);
-		Matrix inverseA = A.inverse();
-		Matrix result = inverseA.times(B);
-		return result.getArrayCopy();*/
-		
+		Matrix B = phiMatrixT.times(tMatrix);		
 		
 		SingularValueDecomposition svd = A.svd();
 		Matrix S = svd.getS();

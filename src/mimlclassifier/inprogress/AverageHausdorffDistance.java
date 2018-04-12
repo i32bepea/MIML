@@ -1,15 +1,23 @@
 package mimlclassifier.inprogress;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.stream.DoubleStream;
 
 import data.Bag;
-import mimlclassifier.regularization.AverageHausdorff;
 import weka.core.DistanceFunction;
+import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.PerformanceStats;
 
-public class AverageHausdorffDistance implements DistanceFunction {
+public class AverageHausdorffDistance implements Serializable, DistanceFunction {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public String[] getOptions() {
@@ -30,42 +38,70 @@ public class AverageHausdorffDistance implements DistanceFunction {
 	}
 
 	@Override
-	public double distance(Instance arg0, Instance arg1){
-		
-		double distance = 0.0;
-		
-		try {
-			Bag bag1 = new Bag(arg0);
-			Bag bag2 = new Bag(arg1);
-			
-			AverageHausdorffDistance metric = new AverageHausdorffDistance();
-			
-			distance = metric.distance(bag1, bag2);
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return distance;
+	public double distance(Instance arg0, Instance arg1){		
+		return distance(arg0, arg1, Double.POSITIVE_INFINITY);
 	}
 
 	@Override
 	public double distance(Instance arg0, Instance arg1, PerformanceStats arg2) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		return distance(arg0, arg1, Double.POSITIVE_INFINITY, arg2);
 	}
 
 	@Override
 	public double distance(Instance arg0, Instance arg1, double arg2) {
-		// TODO Auto-generated method stub
-		return 0;
+		return distance(arg0, arg1, arg2, null);
 	}
 
 	@Override
 	public double distance(Instance arg0, Instance arg1, double arg2, PerformanceStats arg3) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		double finalDistance = 0.0;
+		
+		try {
+			
+			Bag first = new Bag(arg0);
+			Bag second = new Bag(arg1);
+	
+		
+			EuclideanDistance euclideanDistance = new EuclideanDistance(first.getBagAsInstances());
+			
+			int nInstances = second.getBagAsInstances().size();
+			
+			int idx = 0;
+			double sumU = 0.0;
+			double[] minDistancesV = new double[nInstances];
+			Arrays.fill(minDistancesV, Double.MAX_VALUE);
+			
+			for(Instance u : first.getBagAsInstances()) {
+							
+				double minDistance = Double.MAX_VALUE;
+				
+				for(Instance v : second.getBagAsInstances()) {
+					
+					double distance = euclideanDistance.distance(u, v, arg2, arg3);
+	
+					if ( distance < minDistance)
+						minDistance = distance;
+					
+					if (distance < minDistancesV[idx])
+						minDistancesV[idx] = distance;
+					
+					idx++;
+				}
+				
+				idx = 0;
+				sumU += minDistance;
+			}
+			
+			double sumV = DoubleStream.of(minDistancesV).sum();
+			
+			finalDistance =  (sumU + sumV) / (first.getNumInstances() + second.getNumInstances());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return finalDistance;
 	}
 
 	@Override
