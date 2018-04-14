@@ -5,7 +5,6 @@ import java.util.stream.DoubleStream;
 import data.Bag;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.neighboursearch.PerformanceStats;
 import weka.core.EuclideanDistance;
 
 public class AverageHausdorff implements IDistance {

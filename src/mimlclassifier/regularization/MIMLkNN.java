@@ -177,7 +177,9 @@ public class MIMLkNN extends MIMLClassifier {
 		ref_matrix = new int[d_size][d_size];
 		
 		for(int i = 0; i < d_size; ++i) {
+			
 			int[] references = calculateBagReferences(i);
+			
 			for(int j = 0; j < references.length; ++j) 
 				ref_matrix[i][references[j]] = 1;		
 		}

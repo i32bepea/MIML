@@ -53,7 +53,6 @@ public class MLkNNwrapper extends MIMLClassifier{
 	 *  No-arg constructor for xml configuration   
 	*/
 	public MLkNNwrapper() {
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
