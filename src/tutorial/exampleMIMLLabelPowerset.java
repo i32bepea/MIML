@@ -18,10 +18,11 @@ import java.io.File;
 
 import data.Bag;
 import data.MIMLInstances;
-import mimlclassifier.MIMLLabelPowerset;
+import mimlclassifier.degeneration.MIMLLabelPowerset;
 import mulan.classifier.MultiLabelOutput;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
+import mulan.evaluation.MultipleEvaluation;
 import weka.classifiers.Classifier;
 import weka.classifiers.mi.MISMO;
 
@@ -97,6 +98,14 @@ public class exampleMIMLLabelPowerset {
 			Evaluation resultsTT = evalTT.evaluate(MIMLLP, mimlTest, mimlTrain);
 			System.out.println("\nResults on train test evaluation:\n" + resultsTT);
 
+			Evaluator evalCV = new Evaluator();
+			MultipleEvaluation resultsCV;
+			int numFolds = 5;
+			System.out.println("\nPerforming " + numFolds + "-fold cross-validation:\n");
+			resultsCV = evalCV.crossValidate(MIMLLP, mimlTrain, numFolds);
+			System.out.println("\nResults on cross validation evaluation:\n" + resultsCV);
+			
+			
 			System.out.println("The program has finished.");
 
 		} catch (IndexOutOfBoundsException ioobe) {

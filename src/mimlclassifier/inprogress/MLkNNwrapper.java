@@ -4,6 +4,7 @@ import org.apache.commons.configuration.Configuration;
 
 import data.Bag;
 import data.MIMLInstances;
+import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
@@ -12,7 +13,7 @@ import mulan.data.MultiLabelInstances;
 import weka.core.DistanceFunction;
 import weka.core.Instance;
 
-public class MLkNNwrapper extends MIMLClassifier{
+public class MLkNNwrapper extends MIMLClassifier implements IMIMLClassifier{
 
 	/**
 	 * 

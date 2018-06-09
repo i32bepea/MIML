@@ -4,6 +4,7 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 
 import data.MIMLInstances;
+import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 
 public class ConfigLoader {
@@ -15,19 +16,20 @@ public class ConfigLoader {
 		configuration = new XMLConfiguration(filename);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public MIMLClassifier loadClassifier() throws Exception {
 		
 		MIMLClassifier classifier = null;
 
 		String clsName = configuration.getString("classifier[@name]");
-		
 		//Instantiate the classifier class used in the experiment
-		Class<? extends MIMLClassifier> clsClass = 
-				(Class <? extends MIMLClassifier>) Class.forName(clsName);
+		Class<? extends IMIMLClassifier> clsClass = 
+				(Class <? extends IMIMLClassifier>) Class.forName(clsName);
+		System.out.println(clsClass.toString());
 		
-		classifier = clsClass.newInstance();
+		classifier = (MIMLClassifier) clsClass.newInstance();
 		//Configure the classifier
-		if(classifier instanceof MIMLClassifier)
+		if(classifier instanceof IMIMLClassifier)
 			((IConfiguration) classifier).configure(configuration.subset("classifier"));
 
 		return classifier;			
@@ -47,6 +49,13 @@ public class ConfigLoader {
 		String xmlFileName = configuration.subset("data").getString("xmlFile");	
 		
 		return new MIMLInstances(arffFileTest, xmlFileName);	
+	}
+
+	public String loadNameCSV() {
+		
+		String filename = configuration.getString("reportFileName", null);
+		
+		return filename;
 	}
 
 	

@@ -18,7 +18,7 @@ import java.io.File;
 
 import data.Bag;
 import data.MIMLInstances;
-import mimlclassifier.MIMLBinaryRelevance;
+import mimlclassifier.degeneration.MIMLBinaryRelevance;
 import mulan.classifier.MultiLabelOutput;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
