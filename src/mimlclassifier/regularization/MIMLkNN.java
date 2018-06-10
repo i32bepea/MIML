@@ -9,7 +9,6 @@ import org.apache.commons.configuration.Configuration;
 
 import data.Bag;
 import data.MIMLInstances;
-import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
@@ -17,7 +16,7 @@ import mulan.core.ArgumentNullException;
 import weka.core.matrix.Matrix;
 import weka.core.matrix.SingularValueDecomposition;
 
-public class MIMLkNN extends MIMLClassifier implements IMIMLClassifier{
+public class MIMLkNN extends MIMLClassifier{
 
 	/** For serialization */
 	private static final long serialVersionUID = 1L;

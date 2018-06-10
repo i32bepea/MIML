@@ -14,6 +14,8 @@
  */
 package transformation.mimlTOmil;
 
+import java.io.Serializable;
+
 import data.Bag;
 import data.MIMLInstances;
 import mulan.transformations.BinaryRelevanceTransformation;
@@ -32,7 +34,10 @@ import weka.core.Instances;
  * @version 20170507
  *
  */
-public class BRTransformation {
+public class BRTransformation implements Serializable{
+
+	/** For serialization */
+	private static final long serialVersionUID = -3662731281779529497L;
 
 	/** Binary Relevance Transformation */
 	protected BinaryRelevanceTransformation BRT;

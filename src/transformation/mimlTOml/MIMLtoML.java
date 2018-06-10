@@ -14,6 +14,8 @@
  */
 package transformation.mimlTOml;
 
+import java.io.Serializable;
+
 import data.Bag;
 import data.MIMLInstances;
 import mulan.data.MultiLabelInstances;
@@ -31,8 +33,11 @@ import weka.core.Instances;
  * @version 20170507
  *
  */
-public abstract class MIMLtoML {
+public abstract class MIMLtoML implements Serializable{
 
+	
+	/** For serialization */
+	private static final long serialVersionUID = 7781084385932342107L;
 	/** Array of updated label indices */
 	protected int updatedLabelIndices[];
 	/** Template to store Instances */
@@ -49,6 +54,15 @@ public abstract class MIMLtoML {
 	 */
 	public abstract MultiLabelInstances transformDataset() throws Exception;
 
+	/**
+	 * Transforms {@link MIMLInstances} into MultiLabelInstances.
+	 * 
+	 * @return MultiLabelInstances.
+	 * @throws Exception
+	 *             To be handled in an upper level.
+	 */
+	public abstract MultiLabelInstances transformDataset(MIMLInstances dataset) throws Exception;
+	
 	/**
 	 * Transforms {@link Bag} into Instance.
 	 * 

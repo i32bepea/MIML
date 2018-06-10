@@ -4,7 +4,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 
 import data.MIMLInstances;
-import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 
 public class ConfigLoader {
@@ -18,18 +17,17 @@ public class ConfigLoader {
 	
 	@SuppressWarnings("unchecked")
 	public MIMLClassifier loadClassifier() throws Exception {
-		
+
 		MIMLClassifier classifier = null;
 
 		String clsName = configuration.getString("classifier[@name]");
 		//Instantiate the classifier class used in the experiment
-		Class<? extends IMIMLClassifier> clsClass = 
-				(Class <? extends IMIMLClassifier>) Class.forName(clsName);
-		System.out.println(clsClass.toString());
+		Class<? extends MIMLClassifier> clsClass = 
+				(Class <? extends MIMLClassifier>) Class.forName(clsName);
 		
 		classifier = (MIMLClassifier) clsClass.newInstance();
 		//Configure the classifier
-		if(classifier instanceof IMIMLClassifier)
+		if(classifier instanceof MIMLClassifier)
 			((IConfiguration) classifier).configure(configuration.subset("classifier"));
 
 		return classifier;			

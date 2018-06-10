@@ -41,16 +41,16 @@ public class RunAlgorithm {
 			// String xmlFileName = "data+File.separator+miml_text_data.xml";
 	
 			// EJECUCIÓN => -c configurations/MIMLkNN.config 
-
+			
 			MIMLClassifier classifier = loader.loadClassifier();
 			MIMLInstances mimlTrain = loader.loadTrainData();
 			MIMLInstances mimlTest = loader.loadTestData();
 			Evaluator evalCV = new Evaluator();
-			MultipleEvaluation resultsCV;
+			MultipleEvaluation results;
 			
 			int numFolds = 5;
 			System.out.println("\nPerforming " + numFolds + "-fold cross-validation:\n");
-			resultsCV = evalCV.crossValidate(classifier, mimlTrain, numFolds);
+			results = evalCV.crossValidate(classifier, mimlTrain, numFolds);
 			
 
 			//System.out.println("\nResults on cross validation evaluation:\n" + resultsCV);
@@ -60,9 +60,9 @@ public class RunAlgorithm {
 			classifier.build(mimlTrain);
 			Evaluator evalTT = new Evaluator();
 			System.out.println("\nPerforming train-test evaluation:\n");
-			Evaluation resultsTT = evalTT.evaluate(classifier, mimlTest, mimlTrain);
-			System.out.println("\nResults on train test evaluation:\n" + resultsTT);*/
-			
+			Evaluation results = evalTT.evaluate(classifier, mimlTest, mimlTrain);
+			System.out.println("\nResults on train test evaluation:\n" + results);
+			*/
 			
 			String filename = loader.loadNameCSV();
 			
@@ -70,9 +70,9 @@ public class RunAlgorithm {
 				
 				try (PrintWriter out = new PrintWriter(filename)) {
 					
-					Reports report = new Reports(resultsCV, mimlTrain);
+					Reports report = new Reports(results, mimlTrain);
 					
-					System.out.println(resultsCV.toString());
+					System.out.println(results.toString());
 					System.out.println("Guardando resultados en " + filename + "...");
 				    out.println(report.toCSV());
 				    out.close();

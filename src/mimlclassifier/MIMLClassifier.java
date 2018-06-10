@@ -43,8 +43,9 @@ import weka.core.SerializedObject;
  */
 public abstract class MIMLClassifier implements IConfiguration, MultiLabelLearner, Serializable {
 
+	
 	/** for serialization */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -517275642740330327L;
 	protected boolean isModelInitialized = false;
 	/**
 	 * The number of labels the learner can handle. The number of labels is

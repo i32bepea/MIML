@@ -15,6 +15,8 @@
 
 package transformation.mimlTOmil;
 
+import java.io.Serializable;
+
 import data.Bag;
 import data.MIMLInstances;
 import mulan.transformations.LabelPowersetTransformation;
@@ -32,8 +34,11 @@ import weka.core.Instances;
  * @version 20170507
  *
  */
-public class LPTransformation {
+public class LPTransformation implements Serializable {
 
+	/** For serialization */
+	private static final long serialVersionUID = -3418733531408587603L;
+	
 	/** LabelPowerSetTransformation */
 	protected LabelPowersetTransformation LPT;
 
