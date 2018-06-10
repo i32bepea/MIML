@@ -16,69 +16,65 @@
 package tutorial;
 
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 
-import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
-import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
 import utils.ConfigLoader;
 import utils.Reports;
 import weka.core.Utils;
 
 public class RunAlgorithm {	
+	
+	private static Reports run(ConfigLoader loader, MIMLClassifier classifier) throws Exception {
+		
+		System.out.println("Loading evaluation method");
+		Method evaluation = loader.loadEvaluator(classifier);
+		Reports report = null;
+		
+		if("crossValidate".equals(loader.getEvalMethod())){
+			System.out.println("initializing cross validation...");
+			MultipleEvaluation results = (MultipleEvaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
+			report = new Reports(results, loader.getData());
+		}
+		else if("evaluate".equals(loader.getEvalMethod())) {
+			System.out.println("Building model...");
+			classifier.build(loader.getData());
+			System.out.println("Getting evaluation results...");
+			Evaluation results = (Evaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
+			report = new Reports(results, loader.getData());
+		}
+		
+		
+		return report;
+	}
 
 	public static void main(String[] args) {
 
 		try {
-
-			ConfigLoader loader = new ConfigLoader(Utils.getOption("c", args));
-
-			// String arffFileName = Utils.getOption("f", args);
-			// String xmlFileName = Utils.getOption("x", args);
-			// String arffFileName = "data+File.separator+miml_text_data.arff";
-			// String xmlFileName = "data+File.separator+miml_text_data.xml";
-	
 			// EJECUCIÓN => -c configurations/MIMLkNN.config 
+			ConfigLoader loader = new ConfigLoader(Utils.getOption("c", args));
 			
+			System.out.println("Loading classifier");
 			MIMLClassifier classifier = loader.loadClassifier();
-			MIMLInstances mimlTrain = loader.loadTrainData();
-			MIMLInstances mimlTest = loader.loadTestData();
-			Evaluator evalCV = new Evaluator();
-			MultipleEvaluation results;
 			
-			int numFolds = 5;
-			System.out.println("\nPerforming " + numFolds + "-fold cross-validation:\n");
-			results = evalCV.crossValidate(classifier, mimlTrain, numFolds);
-			
-
-			//System.out.println("\nResults on cross validation evaluation:\n" + resultsCV);
-			
-			// Performs a train-test evaluation
-			/*
-			classifier.build(mimlTrain);
-			Evaluator evalTT = new Evaluator();
-			System.out.println("\nPerforming train-test evaluation:\n");
-			Evaluation results = evalTT.evaluate(classifier, mimlTest, mimlTrain);
-			System.out.println("\nResults on train test evaluation:\n" + results);
-			*/
+			Reports report = run(loader, classifier);
 			
 			String filename = loader.loadNameCSV();
 			
 			if(filename != null) {
-				
 				try (PrintWriter out = new PrintWriter(filename)) {
-					
-					Reports report = new Reports(results, mimlTrain);
-					
-					System.out.println(results.toString());
-					System.out.println("Guardando resultados en " + filename + "...");
+										
 				    out.println(report.toCSV());
 				    out.close();
+				    System.out.println("Results saved in " + filename);
 				}
 			}
 			
+			System.out.print("Results:");
+			System.out.println(report.toString());
 			
 		} catch (InvalidDataFormatException e) {
 			e.printStackTrace();
@@ -87,7 +83,6 @@ public class RunAlgorithm {
 			e.printStackTrace();
 		}
 		
-
 	}
 
 }

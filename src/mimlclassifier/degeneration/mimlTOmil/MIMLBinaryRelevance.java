@@ -70,7 +70,7 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 		return BR.makePrediction(bag);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void configure(Configuration configuration) {
 		
@@ -81,7 +81,48 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 			Class<? extends Classifier> baseClassifier = 
 					(Class <? extends Classifier>) Class.forName(baseName);
 			
-			BR = new BinaryRelevance(baseClassifier.newInstance());
+			Configuration subConfiguration = configuration.subset("multiInstanceClassifier"); //getProperty("multiLable")
+			//Parameters length
+			int parameterLength = subConfiguration.getList("parameters.classParameters").size();
+			
+			//Obtaining las clasess
+			Class [] cArg = new Class[parameterLength];
+			Object [] obj = new Object [parameterLength];
+				
+			for(int i=0; i<parameterLength; i++){
+				if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("int.class")){
+					cArg[i] = int.class;
+					obj[i] =  configuration.getInt("multiLabelClassifier.parameters.valueParameters("+i+")");
+					
+				}
+				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("double.class")){
+					cArg[i] = double.class;
+					obj[i] =  configuration.getDouble("multiLabelClassifier.parameters.valueParameters("+i+")");
+					
+				}
+				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("char.class")){
+					cArg[i] = char.class;
+					obj[i] =   configuration.getInt("multiLabelClassifier.parameters.valueParameters("+i+")");
+					
+				}
+				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("byte.class")){
+					cArg[i] = byte.class;
+					obj[i] =   configuration.getByte("multiLabelClassifier.parameters.valueParameters("+i+")");
+					
+				}
+				//Añadir el resto:long,short,boolean, ....,
+				else{
+					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
+					obj[i] =   configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
+				}
+					//En este caso el objeto debe ser del tipo asignado, debería recogerse como cadena, si fuere por un ejemplo un clasificador base que utilizase a su vez
+			}
+			
+			
+			
+	        // valueParameters.
+			// Assign 
+			BR = new BinaryRelevance(baseClassifier.getConstructor(cArg).newInstance(obj));
 		}
 		catch(Exception e) {
 			e.printStackTrace();

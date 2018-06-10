@@ -147,6 +147,17 @@ public class Reports {
 		}
 
 	}
+	
+	public String toString() {
+		
+		if (evaluationCrossValidation != null) {
+			return evaluationCrossValidation.toString();
+		}
+		else {
+			return evaluationHoldout.toString();
+		}
+
+	}
 
 
 }

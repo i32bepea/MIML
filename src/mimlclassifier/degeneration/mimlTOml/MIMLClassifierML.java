@@ -96,7 +96,6 @@ public class MIMLClassifierML extends MIMLClassifier{
 			Configuration subConfiguration = configuration.subset("multiLabelClassifier"); //getProperty("multiLable")
 			//Parameters length
 			int parameterLength = subConfiguration.getList("parameters.classParameters").size();
-			System.out.println("Parameters: " + parameterLength);
 			
 			//Obtaining las clasess
 			Class [] cArg = new Class[parameterLength];
