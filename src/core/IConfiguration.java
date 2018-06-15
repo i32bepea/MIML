@@ -1,11 +1,11 @@
-package utils;
+package core;
 
 import org.apache.commons.configuration.Configuration;
 
 /**
  * Class used to indicate that a class can be configured
  * 
- * @author Álvaro Belmonte Pérez
+ * @author ï¿½lvaro Belmonte Pï¿½rez
  * 
  */
 

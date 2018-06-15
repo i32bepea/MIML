@@ -1,4 +1,4 @@
-package mimlclassifier.regularization;
+package core.distance;
 
 import java.io.Serializable;
 

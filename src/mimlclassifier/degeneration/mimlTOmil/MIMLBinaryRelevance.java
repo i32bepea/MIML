@@ -17,6 +17,9 @@ package mimlclassifier.degeneration.mimlTOmil;
 
 import org.apache.commons.configuration.Configuration;
 
+
+
+
 import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
@@ -25,6 +28,7 @@ import mulan.classifier.MultiLabelOutput;
 import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.Classifier;
+import weka.classifiers.AbstractClassifier;
 
 /**
  * 
@@ -70,7 +74,7 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 		return BR.makePrediction(bag);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void configure(Configuration configuration) {
 		
@@ -80,49 +84,23 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 			//Instance class
 			Class<? extends Classifier> baseClassifier = 
 					(Class <? extends Classifier>) Class.forName(baseName);
-			
-			Configuration subConfiguration = configuration.subset("multiInstanceClassifier"); //getProperty("multiLable")
-			//Parameters length
-			int parameterLength = subConfiguration.getList("parameters.classParameters").size();
-			
-			//Obtaining las clasess
-			Class [] cArg = new Class[parameterLength];
-			Object [] obj = new Object [parameterLength];
 				
-			for(int i=0; i<parameterLength; i++){
-				if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("int.class")){
-					cArg[i] = int.class;
-					obj[i] =  configuration.getInt("multiLabelClassifier.parameters.valueParameters("+i+")");
-					
-				}
-				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("double.class")){
-					cArg[i] = double.class;
-					obj[i] =  configuration.getDouble("multiLabelClassifier.parameters.valueParameters("+i+")");
-					
-				}
-				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("char.class")){
-					cArg[i] = char.class;
-					obj[i] =   configuration.getInt("multiLabelClassifier.parameters.valueParameters("+i+")");
-					
-				}
-				else if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("byte.class")){
-					cArg[i] = byte.class;
-					obj[i] =   configuration.getByte("multiLabelClassifier.parameters.valueParameters("+i+")");
-					
-				}
-				//Añadir el resto:long,short,boolean, ....,
-				else{
-					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
-					obj[i] =   configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
-				}
-					//En este caso el objeto debe ser del tipo asignado, debería recogerse como cadena, si fuere por un ejemplo un clasificador base que utilizase a su vez
+			String optionsAux = configuration.getString("multiInstanceClassifier[@listOptions]");
+			
+			if(optionsAux !=null){
+				String []  options = optionsAux.split(" ");
+			
+				Classifier classifier = baseClassifier.newInstance();
+			
+				((AbstractClassifier) classifier).setOptions(options);
+				
+				BR = new BinaryRelevance(classifier);
 			}
+			else
+				BR = new BinaryRelevance(baseClassifier.newInstance());
+	       
 			
 			
-			
-	        // valueParameters.
-			// Assign 
-			BR = new BinaryRelevance(baseClassifier.getConstructor(cArg).newInstance(obj));
 		}
 		catch(Exception e) {
 			e.printStackTrace();

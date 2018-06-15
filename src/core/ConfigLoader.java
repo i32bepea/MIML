@@ -1,6 +1,7 @@
-package utils;
+package core;
 
 import java.lang.reflect.Method;
+
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -120,8 +121,9 @@ public class ConfigLoader {
 		parameterTypes[0] = MultiLabelLearner.class;
 		params[0] = classifier;
 				
-		if ("crossValidate".equals(evalMethod)) {
+		if ("cross-validation".equals(evalMethod)) {
 			
+			evalMethod = "crossValidate";
 			// load train data
 			MIMLInstances data = loadTrainData(subConfiguration);
 			parameterTypes[1] = MultiLabelInstances.class;
@@ -135,7 +137,9 @@ public class ConfigLoader {
 			this.data = data;
 				
 		}
-		else if ("evaluate".equals(evalMethod)) {
+		else if ("train-test".equals(evalMethod)) {
+			
+			evalMethod = "evaluate";
 			// load train data
 			MIMLInstances train = loadTrainData(subConfiguration);
 			parameterTypes[1] = MultiLabelInstances.class;

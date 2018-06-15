@@ -1,4 +1,4 @@
-package mimlclassifier.regularization;
+package core.distance;
 
 import java.util.Arrays;
 import java.util.stream.DoubleStream;

@@ -122,12 +122,12 @@ public class MIMLClassifierML extends MIMLClassifier{
 					obj[i] =   configuration.getByte("multiLabelClassifier.parameters.valueParameters("+i+")");
 					
 				}
-				//Añadir el resto:long,short,boolean, ....,
+				//Aï¿½adir el resto:long,short,boolean, ....,
 				else{
 					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
 					obj[i] =   configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
 				}
-					//En este caso el objeto debe ser del tipo asignado, debería recogerse como cadena, si fuere por un ejemplo un clasificador base que utilizase a su vez
+					//En este caso el objeto debe ser del tipo asignado, deberï¿½a recogerse como cadena, si fuere por un ejemplo un clasificador base que utilizase a su vez
 			}
 			
 			

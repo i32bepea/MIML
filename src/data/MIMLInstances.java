@@ -16,6 +16,7 @@
 package data;
 
 import mulan.data.InvalidDataFormatException;
+
 import mulan.data.LabelsMetaData;
 import mulan.data.MultiLabelInstances;
 import weka.core.DenseInstance;

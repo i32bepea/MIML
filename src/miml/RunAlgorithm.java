@@ -13,17 +13,17 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package tutorial;
+package miml;
 
 import java.io.PrintWriter;
 import java.lang.reflect.Method;
 
+import core.ConfigLoader;
 import mimlclassifier.MIMLClassifier;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.MultipleEvaluation;
-import utils.ConfigLoader;
-import utils.Reports;
+import report.Reports;
 import weka.core.Utils;
 
 public class RunAlgorithm {	
@@ -54,7 +54,7 @@ public class RunAlgorithm {
 	public static void main(String[] args) {
 
 		try {
-			// EJECUCIÓN => -c configurations/MIMLkNN.config 
+			// EJECUCIï¿½N => -c configurations/MIMLkNN.config 
 			ConfigLoader loader = new ConfigLoader(Utils.getOption("c", args));
 			
 			System.out.println("Loading classifier");

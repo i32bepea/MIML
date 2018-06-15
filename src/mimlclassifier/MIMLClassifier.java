@@ -15,8 +15,10 @@
 package mimlclassifier;
 
 import java.io.Serializable;
+
 import java.util.Date;
 
+import core.IConfiguration;
 import data.Bag;
 import data.MIMLInstances;
 
@@ -26,7 +28,6 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
-import utils.IConfiguration;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
@@ -41,7 +42,7 @@ import weka.core.SerializedObject;
  *
  *
  */
-public abstract class MIMLClassifier implements IConfiguration, MultiLabelLearner, Serializable {
+public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier, MultiLabelLearner,  Serializable {
 
 	
 	/** for serialization */
@@ -75,14 +76,34 @@ public abstract class MIMLClassifier implements IConfiguration, MultiLabelLearne
 	/** Whether debugging is on/off */
 	private boolean isDebug = false;
 	
-	@Override
+	//@Override
 	public boolean isUpdatable() {
 		/** as default learners are assumed not to be updatable. */
 		return false;
 	}
 
-	@Override
+	
 	public final void build(MultiLabelInstances trainingSet) throws Exception {
+		
+		
+		if (trainingSet == null) {
+			throw new ArgumentNullException("trainingSet");
+		}
+
+		isModelInitialized = false;
+
+		numLabels = trainingSet.getNumLabels();
+		labelIndices = trainingSet.getLabelIndices();
+		labelNames = trainingSet.getLabelNames();
+		featureIndices = trainingSet.getFeatureIndices();
+
+		buildInternal(new MIMLInstances(trainingSet.getDataSet(), trainingSet.getLabelsMetaData()));
+		isModelInitialized = true;
+	}
+
+	public final void build(MIMLInstances trainingSet) throws Exception {
+		
+				
 		if (trainingSet == null) {
 			throw new ArgumentNullException("trainingSet");
 		}
@@ -116,9 +137,8 @@ public abstract class MIMLClassifier implements IConfiguration, MultiLabelLearne
 		isDebug = debug;
 	}
 
-	@Override
-	public MultiLabelLearner makeCopy() throws Exception {
-		return (MultiLabelLearner) new SerializedObject(this).getObject();
+	public MIMLClassifier  makeCopy() throws Exception {
+		return (MIMLClassifier) new SerializedObject(this).getObject();
 	}
 
 	/**

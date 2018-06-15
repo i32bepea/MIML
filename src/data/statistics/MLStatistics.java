@@ -604,7 +604,7 @@ public class MLStatistics {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("\n-------------------------");
-		sb.append("\nSummary------------------");
+		sb.append("\n ML - Summary------------------");
 		sb.append("\n-------------------------");
 		sb.append("\nNumber of labels: " + numLabels);
 		sb.append("\nNumber of examples: " + numExamples);

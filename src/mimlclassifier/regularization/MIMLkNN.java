@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.apache.commons.configuration.Configuration;
 
+import core.distance.IDistance;
 import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
