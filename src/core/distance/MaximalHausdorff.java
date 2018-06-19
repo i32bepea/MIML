@@ -1,14 +1,12 @@
 package core.distance;
 
-import java.util.Arrays;
-import java.util.stream.DoubleStream;
 import data.Bag;
+import weka.core.EuclideanDistance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.EuclideanDistance;
 
 /**
- * Class that implements Average Hausdorff metric to measure 
+ * Class that implements Maximal Hausdorff metric to measure 
  * the distance between 2 bags of a data set
  * 
  * @author Álvaro A. Belmonte
@@ -16,13 +14,14 @@ import weka.core.EuclideanDistance;
  * @author Eva Gigaja
  * @version 20180619
  */
-public class AverageHausdorff implements IDistance {
-	
+public class MaximalHausdorff implements IDistance {
+
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -2002702276955682922L;
+	private static final long serialVersionUID = -4225065329008023904L;
+
 
 	/**
-	 * Get the average Hausdorff distance between two bags.
+	 * Get the maximal Hausdorff distance between two bags.
 	 *
 	 * @param first
 	 * 			first Bag
@@ -35,13 +34,7 @@ public class AverageHausdorff implements IDistance {
 	public double distance(Bag first, Bag second) throws Exception {
 		
 		EuclideanDistance euclideanDistance = new EuclideanDistance(first.getBagAsInstances());
-		
-		int nInstances = second.getBagAsInstances().size();
-		
-		int idx = 0;
-		double sumU = 0.0;
-		double[] minDistancesV = new double[nInstances];
-		Arrays.fill(minDistancesV, Double.MAX_VALUE);
+		double finalDistance = -1.0;
 		
 		for(Instance u : first.getBagAsInstances()) {
 						
@@ -53,24 +46,17 @@ public class AverageHausdorff implements IDistance {
 
 				if ( distance < minDistance)
 					minDistance = distance;
-				
-				if (distance < minDistancesV[idx])
-					minDistancesV[idx] = distance;
-				
-				idx++;
 			}
-			
-			idx = 0;
-			sumU += minDistance;
-		}
-		
-		double sumV = DoubleStream.of(minDistancesV).sum();
+	
+			if (finalDistance < minDistance)
+				finalDistance = minDistance;
+		}	
 
-		return (sumU + sumV) / (first.getNumInstances() + second.getNumInstances());
+		return finalDistance;
 	}
 
 	/**
-	 * Get the average Hausdorff distance between two bags in the form of a set of instances.
+	 * Get the maximal Hausdorff distance between two bags in the form of a set of instances.
 	 *
 	 * @param first
 	 * 			first Bag as Instances
@@ -86,11 +72,7 @@ public class AverageHausdorff implements IDistance {
 		euclideanDistance.setDontNormalize(true);
 		
 		int nInstances = second.size();
-		
-		int idx = 0;
-		double sumU = 0.0;
-		double[] minDistancesV = new double[nInstances];
-		Arrays.fill(minDistancesV, Double.MAX_VALUE);
+		double finalDistance = -1.0;
 		
 		for(int i = 0; i < first.size(); ++i) {
 						
@@ -104,20 +86,13 @@ public class AverageHausdorff implements IDistance {
 				
 				if ( distance < minDistance)
 					minDistance = distance;
-				
-				if (distance < minDistancesV[idx])
-					minDistancesV[idx] = distance;
-				
-				idx++;
 			}
 			
-			idx=0;
-			sumU += minDistance;
+			if (finalDistance < minDistance)
+				finalDistance = minDistance;			
 		}
 		
-		double sumV = DoubleStream.of(minDistancesV).sum();
-
-		return (sumU + sumV) / (first.size() + second.size());
+		return finalDistance;
 	}
-	
+
 }

@@ -115,9 +115,7 @@ public class MIMLkNN extends MIMLClassifier{
 		
 		double startTime = System.currentTimeMillis();
 		
-		System.out.println("Calculando matriz de distancias...");
 		calculateDatasetDistances();
-		System.out.println("Calculando referencias y citas...");
 		calculateReferenceMatrix();
 		
 		for(int i = 0; i < d_size; ++i) {
@@ -129,13 +127,8 @@ public class MIMLkNN extends MIMLClassifier{
 		
 		weights_matrix = getWeightsMatrix();
 		
-		System.out.println("+Matriz de pesos:");
-		for(int i = 0; i < numLabels; ++i)
-			System.out.println(Arrays.toString(weights_matrix[i]));
-		
 		double stopTime = System.currentTimeMillis();
 		double elapsedTime = (stopTime - startTime)/1000;
-		System.out.println("\n-Tiempo transcurrido en crear el modelo: " + elapsedTime + " segundos");
 	}
 
 	/**
