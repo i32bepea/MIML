@@ -38,7 +38,8 @@ import weka.classifiers.AbstractClassifier;
  * @author Ana I. Reyes Melero
  * @author Eva Gibaja
  * @author Amelia Zafra
- * @version 20170507
+ * @author Álvaro A. Belmonte
+ * @version 20180619
  *
  */
 public class MIMLBinaryRelevance extends MIMLClassifier {

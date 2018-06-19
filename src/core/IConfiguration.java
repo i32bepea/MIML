@@ -3,10 +3,12 @@ package core;
 import org.apache.commons.configuration.Configuration;
 
 /**
- * Class used to indicate that a class can be configured
+ * Interface used to indicate that a class can be configured
  * 
- * @author �lvaro Belmonte P�rez
- * 
+ * @author Álvaro A. Belmonte
+ * @author Amelia Zafra
+ * @author Eva Gigaja
+ * @version 20180619
  */
 
 public interface IConfiguration {
@@ -14,7 +16,8 @@ public interface IConfiguration {
 	/**
 	 * Configuration method
 	 * 
-	 * @param configuration the configuration class
+	 * @param configuration
+	 * 				Configuration the configuration class
 	 */
 	public void configure(Configuration configuration);	
 

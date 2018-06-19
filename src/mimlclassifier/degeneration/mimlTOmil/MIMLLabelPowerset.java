@@ -31,10 +31,11 @@ import weka.classifiers.Classifier;
  * dataset is considered as a new class and then single-label classification is
  * performed.
  * 
- * @author Ana I. Reyes
+ * @author Ana I. Reyes Melero
  * @author Eva Gibaja
  * @author Amelia Zafra
- * @version 20170507
+ * @author Álvaro A. Belmonte
+ * @version 20180619
  */
 public class MIMLLabelPowerset extends MIMLClassifier{
 	/** For serialization */

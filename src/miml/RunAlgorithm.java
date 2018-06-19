@@ -26,8 +26,27 @@ import mulan.evaluation.MultipleEvaluation;
 import report.Reports;
 import weka.core.Utils;
 
+/**
+ * Class that allow run any algorithm of the library configured by a
+ * file configuration.
+ * 
+ * @author A.A Belmonte
+ * @author Amelia Zafra
+ * @author Eva Gigaja
+ * @version 20180619
+ */
 public class RunAlgorithm {	
 	
+	/**
+	 * Load the evaluation method and run the algorithm.
+	 *
+	 * @param loader 
+	 * 			the experiment's configuration
+	 * @param classifier 
+	 * 			the classifier used in the experiment
+	 * 
+	 * @return the reports
+	 */
 	private static Reports run(ConfigLoader loader, MIMLClassifier classifier) throws Exception {
 		
 		System.out.println("Loading evaluation method");
@@ -51,10 +70,16 @@ public class RunAlgorithm {
 		return report;
 	}
 
+	/**
+	 * The main method.
+	 *
+	 * @param args 
+	 * 			the arguments(route of config file with the option -c)
+	 */
 	public static void main(String[] args) {
 
 		try {
-			// EJECUCI�N => -c configurations/MIMLkNN.config 
+			// example execution => -c configurations/MIMLkNN.config 
 			ConfigLoader loader = new ConfigLoader(Utils.getOption("c", args));
 			
 			System.out.println("Loading classifier");

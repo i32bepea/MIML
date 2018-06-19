@@ -7,15 +7,29 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.EuclideanDistance;
 
+/**
+ * Class that implements Average Hausdorff metric to measure 
+ * the distance between 2 bags of a dataset
+ * 
+ * @author Álvaro A. Belmonte
+ * @author Amelia Zafra
+ * @author Eva Gigaja
+ * @version 20180619
+ */
 public class AverageHausdorff implements IDistance {
 	
-	/**
-	 * 
-	 */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -2002702276955682922L;
 
 	/**
-	 * Get the average Hausdorff distance between two bags
+	 * Get the average Hausdorff distance between two bags.
+	 *
+	 * @param first
+	 * 			first Bag
+	 * @param seconf
+	 * 			second Bag
+	 * 
+	 * @return distance between two bags
 	 */
 	public double distance(Bag first, Bag second) throws Exception {
 		
@@ -55,7 +69,14 @@ public class AverageHausdorff implements IDistance {
 	}
 
 	/**
-	 * Get the average Hausdorff distance between two bags in the form of a set of instances
+	 * Get the average Hausdorff distance between two bags in the form of a set of instances.
+	 *
+	 * @param first
+	 * 			first Bag as Instances
+	 * @param second
+	 * 			second Bag as Instances
+	 * 
+	 * @return distance between two bags
 	 */
 	public double distance(Instances first, Instances second) throws Exception {
 		

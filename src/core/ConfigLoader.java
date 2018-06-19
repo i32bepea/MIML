@@ -13,28 +13,64 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluator;
 
+/**
+ * Class used to read a xml file and configure a experiment.
+ * 
+ * @author Álvaro A. Belmonte
+ * @author Amelia Zafra
+ * @author Eva Gigaja
+ * @version 20180619
+ */
 public class ConfigLoader {
 
-	/** Configuration object */
+	/**  Configuration object. */
 	protected XMLConfiguration configuration;
 	
+	/** The params of evaluator method. */
 	private Object[] params = null;
+	
+	/** The evaluator. */
 	private Evaluator evaluator = null;
+	
+	/** The type of evaluation method. */
 	private String evalMethod = null;
+	
+	/** The data. */
 	private MIMLInstances data;
 
+	/**
+	 * Gets the data.
+	 *
+	 * @return MIML data sets for train
+	 */
 	public MIMLInstances getData() {
 		return data;
 	}
 
+	/**
+	 * Gets the configuration.
+	 *
+	 * @return The configuration
+	 */
 	public XMLConfiguration getConfiguration() {
 		return configuration;
 	}
 
+	/**
+	 * Sets the configuration.
+	 *
+	 * @param configuration
+	 * 				A new configuration
+	 */
 	public void setConfiguration(XMLConfiguration configuration) {
 		this.configuration = configuration;
 	}
 
+	/**
+	 * Gets the params of evaluator method.
+	 *
+	 * @return The params of evaluator method
+	 */
 	public Object[] getParams() throws Exception {
 		
 		if(params == null) {
@@ -44,6 +80,11 @@ public class ConfigLoader {
 		return params;
 	}
 	
+	/**
+	 * Gets the evaluator method.
+	 *
+	 * @return The evaluator method
+	 */
 	public Evaluator getEvaluator() throws Exception {
 		if(evaluator == null) {
 			System.err.println("Error, it's necessary load the evaluator first");
@@ -52,6 +93,11 @@ public class ConfigLoader {
 		return evaluator;
 	}
 	
+	/**
+	 * Gets the type of evaluation method.
+	 *
+	 * @return The type of evaluation method
+	 */
 	public String getEvalMethod() throws Exception {
 		if(evalMethod == null) {
 			System.err.println("Error, it's necessary load the evaluator first");
@@ -61,10 +107,21 @@ public class ConfigLoader {
 	}
 
 
+	/**
+	 * Instantiates a new config loader.
+	 *
+	 * @param filename
+	 * 				the name of config file
+	 */
 	public ConfigLoader(String filename) throws ConfigurationException {
 		configuration = new XMLConfiguration(filename);
 	}
 	
+	/**
+	 * Read current configuration to load and configure the classifier.
+	 *
+	 * @return A MIML classifier
+	 */
 	@SuppressWarnings("unchecked")
 	public MIMLClassifier loadClassifier() throws Exception {
 
@@ -83,6 +140,14 @@ public class ConfigLoader {
 		return classifier;			
 	}
 	
+	/**
+	 * Load train data.
+	 *
+	 * @param configuration
+	 * 				The subset of configuration with the data route
+	 * 
+	 * @return A MIML instances
+	 */
 	private MIMLInstances loadTrainData(Configuration configuration) throws Exception  {
 		
 		String arffFileTrain = configuration.subset("data").getString("trainFile");
@@ -91,6 +156,14 @@ public class ConfigLoader {
 		return new MIMLInstances(arffFileTrain, xmlFileName);
 	}
 	
+	/**
+	 * Load test data.
+	 *
+	 * @param configuration
+	 * 				The subset of configuration with the data route
+	 * 
+	 * @return A MIML instances
+	 */
 	private MIMLInstances loadTestData(Configuration configuration) throws Exception  {
 		
 		String arffFileTest = configuration.subset("data").getString("testFile");
@@ -99,6 +172,11 @@ public class ConfigLoader {
 		return new MIMLInstances(arffFileTest, xmlFileName);	
 	}
 
+	/**
+	 * Load name of CSV file to save the experiment's results.
+	 *
+	 * @return Name of CSV file
+	 */
 	public String loadNameCSV() {
 		
 		String filename = configuration.getString("reportFileName", null);
@@ -106,6 +184,14 @@ public class ConfigLoader {
 		return filename;
 	}
 	
+	/**
+	 * Load the evaluator method used to train the classifier.
+	 *
+	 * @param classifier
+	 * 				Classifier which is going to be evaluated
+	 * 
+	 * @return The method to evaluate the classifier
+	 */
 	@SuppressWarnings("rawtypes")
 	public Method loadEvaluator(MIMLClassifier classifier) throws Exception {
 		

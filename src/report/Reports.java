@@ -10,25 +10,60 @@ import mulan.evaluation.MultipleEvaluation;
 import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.Measure;
 
+/**
+ * Class used to generate reports with the format specified.
+ * 
+ * @author Álvaro A. Belmonte
+ * @author Eva Gibaja
+ * @author Amelia Zafra
+ * @version 20180608
+ */
 public class Reports {
 	
+	/** Cross-validation evaluator type . */
 	private MultipleEvaluation evaluationCrossValidation = null;
+	
+	/** Holdout evaluator type. */
 	private Evaluation evaluationHoldout = null;
 	
+	/** The data. */
 	private MIMLInstances data;
 	
+	/**
+	 * Instantiates a new reports with a cross-validation evaluator.
+	 *
+	 * @param evaluation 
+	 * 			cross-validation evaluator type
+	 * 
+	 * @param data 
+	 * 			the data used by the evaluator
+	 */
 	public Reports(MultipleEvaluation evaluation, MIMLInstances data) {
 		
 		this.evaluationCrossValidation = evaluation;
 		this.data = data;
 	}
 	
+	/**
+	 * Instantiates a new reports with a holdout evaluator.
+	 *
+	 * @param evaluation 
+	 * 			holdout evaluator type
+	 * 
+	 * @param data 
+	 * 			the data used by the evaluator
+	 */
 	public Reports(Evaluation evaluation, MIMLInstances data) {
 		
 		this.evaluationHoldout = evaluation;
 		this.data = data;
 	}
 	
+	/**
+	 * Read the cross-validation results and transform to CSV format.
+	 *
+	 * @return the string with CSV content
+	 */
 	private String crossValidationToCSV() throws MulanException {
 		
 		ArrayList<Evaluation> evaluations = evaluationCrossValidation.getEvaluations();
@@ -91,6 +126,11 @@ public class Reports {
         return sb.toString();		
 	}
 	
+	/**
+	 * Read the holdout results and transform to CSV format.
+	 *
+	 * @return the string with CSV content
+	 */
 	private String holdoutToCSV() {
 		
         StringBuilder sb = new StringBuilder();
@@ -137,6 +177,11 @@ public class Reports {
         return sb.toString();
 	}
 	
+	/**
+	 * Convert to CSV the evaluator results.
+	 *
+	 * @return the string with CSV content
+	 */
 	public String toCSV() throws MulanException {
 		
 		if (evaluationCrossValidation != null) {
@@ -148,6 +193,11 @@ public class Reports {
 
 	}
 	
+	/**
+	 * Convert to plain text the evaluator results.
+	 *
+	 * @return the string with the content
+	 */
 	public String toString() {
 		
 		if (evaluationCrossValidation != null) {

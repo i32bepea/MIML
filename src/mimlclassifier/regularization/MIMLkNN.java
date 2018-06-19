@@ -17,55 +17,85 @@ import mulan.core.ArgumentNullException;
 import weka.core.matrix.Matrix;
 import weka.core.matrix.SingularValueDecomposition;
 
+
+/**
+ * Class implementing the MIMLkNN algorithm for MIML data.
+ * 
+ * @author Álvaro A. Belmonte
+ * @author Eva Gibaja
+ * @author Amelia Zafra
+ * @version 20180608
+ */
 public class MIMLkNN extends MIMLClassifier{
 
-	/** For serialization */
+	/**  For serialization. */
 	private static final long serialVersionUID = 1L;
 	
-	/** Number of citers*/
+	/**  Number of citers. */
 	private int num_citers = 1;
 	
-	/**Number of references*/
+	/** Number of references. */
 	private int num_references = 1;
 	
-	/** Metric for measure the distance between bags */
+	/**  Metric for measure the distance between bags. */
 	private IDistance metric;
 	
-	/** MIML data */
+	/**  MIML data. */
 	private MIMLInstances dataset;
 	
-	/** Dataset size (number of bags) */
+	/**  Dataset size (number of bags). */
 	int d_size;
 	
-	/** Distance matrix between dataset's instances */
+	/**  Distance matrix between dataset's instances. */
 	private double[][] distance_matrix;
 	
-	/** Instances' references matrix */
+	/**  Instances' references matrix. */
 	private int[][] ref_matrix;
 	
-	/** Weights matrix */
+	/**  Weights matrix. */
 	private double[][] weights_matrix;
 	
+	/** The t matrix. */
 	private double[][] t_matrix;
 
+	/** The phi matrix. */
 	private double[][] phi_matrix;	
 	
+	/**
+	 * Instantiates a new MIMlkNN classifier.
+	 *
+	 * @param num_references 
+	 * 				the number of references considered by the algorithm
+	 * @param num_citers 
+	 * 				the number of citers considered by the algorithm
+	 * @param metric 
+	 * 				the metric used by the algorithm to measure the distance
+	 */
 	public MIMLkNN(int num_references, int num_citers, IDistance metric) {
 		this.num_citers = num_citers;
 		this.num_references = num_references;
 		this.metric = metric;
 	}
 	
+	/**
+	 * Instantiates a new MIMlkNN with values by default
+	 *
+	 * @param metric 
+	 * 				the metric used by the algorithm to measure the distance
+	 */
 	public MIMLkNN(IDistance metric) {
 		this.metric = metric;
 	}
 
 	/**
-	 *  No-arg constructor for xml configuration   
-	*/
+	 *  No-argument constructor for xml configuration.
+	 */
 	public MIMLkNN() {
 	}
 	
+	/**
+	 * @see mimlclassifier.MIMLClassifier#buildInternal(data.MIMLInstances)
+	 */
 	@Override
 	protected void buildInternal(MIMLInstances trainingSet) throws Exception {
 		if (trainingSet == null) {
@@ -108,6 +138,9 @@ public class MIMLkNN extends MIMLClassifier{
 		System.out.println("\n-Tiempo transcurrido en crear el modelo: " + elapsedTime + " segundos");
 	}
 
+	/**
+	 * @see mimlclassifier.MIMLClassifier#makePredictionInternal(data.Bag)
+	 */
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException {
 		
@@ -156,6 +189,10 @@ public class MIMLkNN extends MIMLClassifier{
 		return finalDecision;
 	}
 	
+	/**
+	 * Calculate the distances matrix of current data set 
+	 * with the metric assigned
+	 */
 	private void calculateDatasetDistances() throws Exception {
 
 		distance_matrix = new double[d_size][d_size];
@@ -173,6 +210,9 @@ public class MIMLkNN extends MIMLClassifier{
 		}
 	}
 	
+	/**
+	 * Calculate the references matrix.
+	 */
 	private void calculateReferenceMatrix() throws Exception {
 		
 		ref_matrix = new int[d_size][d_size];
@@ -186,6 +226,15 @@ public class MIMLkNN extends MIMLClassifier{
 		}
 	}
 	
+	/**
+	 * Calculate the references of a bag specified by its index.
+	 * It's necessary calculate the distance matrix previously.
+	 *
+	 * @param indexBag 
+	 * 			the index bag
+	 * 
+	 * @return the references' indices of the bag
+	 */
 	private int[] calculateBagReferences(int indexBag) throws Exception {
 		// Nearest neighbors of the selected bag
 		int[] nearestNeighbors = new int[num_references];
@@ -204,6 +253,14 @@ public class MIMLkNN extends MIMLClassifier{
     	return nearestNeighbors;
 	}
 	
+	/**
+	 * Gets the references of a specified bag.
+	 *
+	 * @param indexBag 
+	 * 				the index bag
+	 * 
+	 * @return the bag's references
+	 */
 	private int[] getReferences(int indexBag) {
 		
 		int[] references = new int[num_references];
@@ -218,6 +275,15 @@ public class MIMLkNN extends MIMLClassifier{
 		return references;
 	}
 	
+	/**
+	 * Calculate and return the citers of a bag specified by its index.
+	 * It's necessary calculate the distance matrix first.
+	 *
+	 * @param indexBag 
+	 * 			the index bag
+	 * 
+	 * @return the bag's citers
+	 */
 	private int[] getCiters(int indexBag) {
 		
 		PriorityQueue<Integer> pq = new PriorityQueue<Integer>(num_references,
@@ -237,6 +303,15 @@ public class MIMLkNN extends MIMLClassifier{
 		return nearestCiters;
 	}
 	
+	/**
+	 * Gets the union of references and citers (without repetitions) 
+	 * of the bag specified.
+	 *
+	 * @param indexBag 
+	 * 				the index bag
+	 * 
+	 * @return the union neighbors
+	 */
 	private Integer[] getUnionNeighbors(int indexBag) {
 		
 		int[] references = getReferences(indexBag);
@@ -254,6 +329,15 @@ public class MIMLkNN extends MIMLClassifier{
 	    return union;
 	}
 	
+	/**
+	 * Calculate the number of times each label appears in the
+	 * bag's neighborhood.
+	 *
+	 * @param indices 
+	 * 			the neighboor's indices
+	 * 
+	 * @return the labels' record
+	 */
 	private double[] calculateRecordLabel(Integer[] indices) {
 		
 		double[] labelCount = new double[numLabels];
@@ -267,6 +351,14 @@ public class MIMLkNN extends MIMLClassifier{
 		return labelCount;
 	}
 
+	/**
+	 * Gets the labels of specified bag.
+	 *
+	 * @param bagIndex 
+	 * 			the bag index
+	 * 
+	 * @return the bag labels
+	 */
 	private double[] getBagLabels(int bagIndex) {
 		
 		double[] labels = new double[numLabels];
@@ -280,6 +372,11 @@ public class MIMLkNN extends MIMLClassifier{
 		return labels;
 	}
 	
+	/**
+	 * Calculate the weights matrix used for prediction.
+	 *
+	 * @return the weights matrix
+	 */
 	private double[][] getWeightsMatrix(){
 		
 		Matrix tMatrix = new Matrix(t_matrix);
@@ -316,6 +413,17 @@ public class MIMLkNN extends MIMLClassifier{
 		
 	}
 	
+	/**
+	 * Decide which labels belong to a specified bag.
+	 *
+	 * @param weights 
+	 * 			the weights correspondent to each label
+	 * 
+	 * @param record 
+	 * 			the labels' record of bag's neighbor to be predicted.
+	 * 
+	 * @return true, if belong, false if not.
+	 */
 	private boolean linearClassifier(double[] weights, double[] record) {
 		
 		double decision = 0.0;
@@ -326,26 +434,45 @@ public class MIMLkNN extends MIMLClassifier{
 		return (decision > 0.0) ? true : false;
 	}
 	
-	/** Returns the number of citers considered to estimate the class prediction of tests bags*/
+	/**
+	 *  Returns the number of citers considered to estimate the class prediction of tests bags.
+	 *
+	 * @return the num citers
+	 */
 	public int getNumCiters() {
 		return num_citers;
 	}
 
-	/**Sets the number of citers considered to estimate the class prediction of tests bags*/
+	/**
+	 * Sets the number of citers considered to estimate the class prediction of tests bags.
+	 *
+	 * @param numCiters the new num citers
+	 */
 	public void setNumCiters(int numCiters) {
 		this.num_citers = numCiters;
 	}
 
-	/**Returns the number of references considered to estimate the class prediction of tests bags*/
+	/**
+	 * Returns the number of references considered to estimate the class prediction of tests bags.
+	 *
+	 * @return the num references
+	 */
 	public int getNumReferences() {
 		return num_references;
 	}
 
-	/**Sets the number of references considered to estimate the class prediction of tests bags*/
+	/**
+	 * Sets the number of references considered to estimate the class prediction of tests bags.
+	 *
+	 * @param numReferences the new num references
+	 */
 	public void setNumReferences(int numReferences) {
 		this.num_references = numReferences;
 	}
 
+	/**
+	 * @see core.IConfiguration#configure(org.apache.commons.configuration.Configuration)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Configuration configuration) {
