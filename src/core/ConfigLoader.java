@@ -2,7 +2,6 @@ package core;
 
 import java.lang.reflect.Method;
 
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -14,13 +13,12 @@ import mulan.data.MultiLabelInstances;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
-import report.IReport;
 import report.MIMLReport;
 
 /**
  * Class used to read a xml file and configure a experiment.
  * 
- * @author √Ålvaro A. Belmonte
+ * @author ¡lvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gigaja
  * @version 20180619
@@ -145,7 +143,7 @@ public class ConfigLoader {
 	}
 	
 	/**
-	 * Load train data.
+	 * Load train data for holdout.
 	 *
 	 * @param configuration
 	 * 				The subset of configuration with the data route
@@ -161,7 +159,7 @@ public class ConfigLoader {
 	}
 	
 	/**
-	 * Load test data.
+	 * Load test data for holdout.
 	 *
 	 * @param configuration
 	 * 				The subset of configuration with the data route
@@ -171,6 +169,22 @@ public class ConfigLoader {
 	private MIMLInstances loadTestData(Configuration configuration) throws Exception  {
 		
 		String arffFileTest = configuration.subset("data").getString("testFile");
+		String xmlFileName = configuration.subset("data").getString("xmlFile");	
+		
+		return new MIMLInstances(arffFileTest, xmlFileName);	
+	}
+		
+	/**
+	 * Load data for cross-validation.
+	 *
+	 * @param configuration
+	 * 				The subset of configuration with the data route
+	 * 
+	 * @return A MIML instances
+	 */
+	private MIMLInstances loadData(Configuration configuration) throws Exception  {
+		
+		String arffFileTest = configuration.subset("data").getString("file");
 		String xmlFileName = configuration.subset("data").getString("xmlFile");	
 		
 		return new MIMLInstances(arffFileTest, xmlFileName);	
@@ -215,7 +229,7 @@ public class ConfigLoader {
 			
 			evalMethod = "crossValidate";
 			// load train data
-			MIMLInstances data = loadTrainData(subConfiguration);
+			MIMLInstances data = loadData(subConfiguration);
 			parameterTypes[1] = MultiLabelInstances.class;
 			params[1] = data;
 			
