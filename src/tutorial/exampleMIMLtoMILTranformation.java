@@ -18,7 +18,7 @@ import java.io.File;
 
 import data.MIMLInstances;
 import data.MLSaver;
-import transformation.mimlTOmil.LPTransformation;
+import transformation.mimlTOmi.LPTransformation;
 import weka.core.Instances;
 
 /**

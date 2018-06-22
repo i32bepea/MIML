@@ -18,45 +18,14 @@ import mulan.evaluation.measure.Measure;
  * @author Amelia Zafra
  * @version 20180608
  */
-public class Reports {
+public class BaseMIMLReport extends MIMLReport implements IReport {
 	
-	/** Cross-validation evaluator type . */
-	private MultipleEvaluation evaluationCrossValidation = null;
-	
-	/** Holdout evaluator type. */
-	private Evaluation evaluationHoldout = null;
-	
-	/** The data. */
-	private MIMLInstances data;
-	
-	/**
-	 * Instantiates a new reports with a cross-validation evaluator.
-	 *
-	 * @param evaluation 
-	 * 			cross-validation evaluator type
-	 * 
-	 * @param data 
-	 * 			the data used by the evaluator
-	 */
-	public Reports(MultipleEvaluation evaluation, MIMLInstances data) {
-		
-		this.evaluationCrossValidation = evaluation;
-		this.data = data;
+	public BaseMIMLReport(Evaluation evaluation, MIMLInstances data) {
+		super(evaluation, data);
 	}
 	
-	/**
-	 * Instantiates a new reports with a holdout evaluator.
-	 *
-	 * @param evaluation 
-	 * 			holdout evaluator type
-	 * 
-	 * @param data 
-	 * 			the data used by the evaluator
-	 */
-	public Reports(Evaluation evaluation, MIMLInstances data) {
-		
-		this.evaluationHoldout = evaluation;
-		this.data = data;
+	public BaseMIMLReport(MultipleEvaluation evaluation, MIMLInstances data) {
+		super(evaluation, data);
 	}
 	
 	/**
@@ -190,7 +159,6 @@ public class Reports {
 		else {
 			return holdoutToCSV();
 		}
-
 	}
 	
 	/**
@@ -198,7 +166,7 @@ public class Reports {
 	 *
 	 * @return the string with the content
 	 */
-	public String toString() {
+	public String toPlainText() {
 		
 		if (evaluationCrossValidation != null) {
 			return evaluationCrossValidation.toString();

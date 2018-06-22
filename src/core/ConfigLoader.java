@@ -11,7 +11,11 @@ import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
 import mulan.classifier.MultiLabelLearner;
 import mulan.data.MultiLabelInstances;
+import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
+import mulan.evaluation.MultipleEvaluation;
+import report.IReport;
+import report.MIMLReport;
 
 /**
  * Class used to read a xml file and configure a experiment.
@@ -173,13 +177,13 @@ public class ConfigLoader {
 	}
 
 	/**
-	 * Load name of CSV file to save the experiment's results.
+	 * Load name of report file to save the experiment's results.
 	 *
-	 * @return Name of CSV file
+	 * @return Filename
 	 */
-	public String loadNameCSV() {
+	public String loadReportName() {
 		
-		String filename = configuration.getString("reportFileName", null);
+		String filename = configuration.subset("report").getString("fileName", null);
 		
 		return filename;
 	}
@@ -242,6 +246,56 @@ public class ConfigLoader {
 		Method method = evaluator.getClass().getMethod(evalMethod, parameterTypes);
 		
 		return method;
+	}
+	
+	/**
+	 * Load report for cross-validation.
+	 *
+	 * @param evaluator 
+	 * 			the evaluator used in cross-validation
+	 * @return the MIML report
+	 */
+	@SuppressWarnings("unchecked")
+	public MIMLReport loadReportCrossValidation(MultipleEvaluation evaluator) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		
+		MIMLReport report = null;
+
+		String reportName = configuration.getString("report[@name]");
+		//Instantiate the classifier class used in the experiment
+		Class<? extends MIMLReport> clsClass = 
+				(Class <? extends MIMLReport>) Class.forName(reportName);
+		
+		report = (MIMLReport) clsClass.newInstance();
+		
+		report.setEvaluationCrossValidation(evaluator);
+		report.setData(data);
+
+		return report;			
+	}
+	
+	/**
+	 * Load report for cross-validation.
+	 *
+	 * @param evaluator 
+	 * 			the evaluator used in cross-validation
+	 * @return the MIML report
+	 */
+	@SuppressWarnings("unchecked")
+	public MIMLReport loadReportHoldout(Evaluation evaluator) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		
+		MIMLReport report = null;
+
+		String reportName = configuration.getString("report[@name]");
+		//Instantiate the classifier class used in the experiment
+		Class<? extends MIMLReport> clsClass = 
+				(Class <? extends MIMLReport>) Class.forName(reportName);
+		
+		report = (MIMLReport) clsClass.newInstance();
+		
+		report.setEvaluationHoldout(evaluator);
+		report.setData(data);
+
+		return report;			
 	}
 
 	

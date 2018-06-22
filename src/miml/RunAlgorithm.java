@@ -23,7 +23,9 @@ import mimlclassifier.MIMLClassifier;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.MultipleEvaluation;
-import report.Reports;
+import report.BaseMIMLReport;
+import report.IReport;
+import report.MIMLReport;
 import weka.core.Utils;
 
 /**
@@ -47,27 +49,26 @@ public class RunAlgorithm {
 	 * 
 	 * @return the reports
 	 */
-	private static Reports run(ConfigLoader loader, MIMLClassifier classifier) throws Exception {
+	private static IReport run(ConfigLoader loader, MIMLClassifier classifier) throws Exception {
 		
 		System.out.println("Loading evaluation method");
 		Method evaluation = loader.loadEvaluator(classifier);
-		Reports report = null;
+		MIMLReport report = null;
 		
 		if("crossValidate".equals(loader.getEvalMethod())){
 			System.out.println("initializing cross validation...");
 			MultipleEvaluation results = (MultipleEvaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
-			report = new Reports(results, loader.getData());
+			report = loader.loadReportCrossValidation(results);
 		}
 		else if("evaluate".equals(loader.getEvalMethod())) {
 			System.out.println("Building model...");
 			classifier.build(loader.getData());
 			System.out.println("Getting evaluation results...");
 			Evaluation results = (Evaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
-			report = new Reports(results, loader.getData());
+			report = loader.loadReportHoldout(results);
 		}
 		
-		
-		return report;
+		return ((IReport) report);
 	}
 
 	/**
@@ -85,9 +86,9 @@ public class RunAlgorithm {
 			System.out.println("Loading classifier");
 			MIMLClassifier classifier = loader.loadClassifier();
 			
-			Reports report = run(loader, classifier);
+			IReport report = run(loader, classifier);
 			
-			String filename = loader.loadNameCSV();
+			String filename = loader.loadReportName();
 			
 			if(filename != null) {
 				try (PrintWriter out = new PrintWriter(filename)) {

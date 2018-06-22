@@ -12,37 +12,43 @@
  *    along with this program; if not, write to the Free Software
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-package mimlclassifier.degeneration.mimlTOmil;
+
+package mimlclassifier.mimlTOmi;
 
 import org.apache.commons.configuration.Configuration;
+
+
+
 
 import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelOutput;
-import mulan.classifier.transformation.LabelPowerset;
+import mulan.classifier.transformation.BinaryRelevance;
 import mulan.data.MultiLabelInstances;
-import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.classifiers.AbstractClassifier;
 
 /**
- * Class inheriting the LP algorithm for MIML data. Each label set in the
- * dataset is considered as a new class and then single-label classification is
- * performed.
+ * 
+ * Class implementing the BR algorithm for MIML data. A classifier is built for
+ * each label and predictions are also gathered for each label.
  * 
  * @author Ana I. Reyes Melero
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @author Álvaro A. Belmonte
  * @version 20180619
+ *
  */
-public class MIMLLabelPowerset extends MIMLClassifier{
+public class MIMLBinaryRelevance extends MIMLClassifier {
+
 	/** For serialization */
 	private static final long serialVersionUID = 1L;
 
-	/** An LP classifier */
-	private LabelPowerset LP;
+	/** A BinaryRelevance classifier */
+	private BinaryRelevance BR;
 
 	/**
 	 * Constructor.
@@ -52,24 +58,21 @@ public class MIMLLabelPowerset extends MIMLClassifier{
 	 * @throws Exception
 	 *             To be handled in an upper level.
 	 */
-	public MIMLLabelPowerset(Classifier baseClassifier) throws Exception {
+	public MIMLBinaryRelevance(Classifier baseClassifier) throws Exception {
 		super();
-		LP = new LabelPowerset(baseClassifier);
-	}
-	
-	public MIMLLabelPowerset() {
+		BR = new BinaryRelevance(baseClassifier);
 	}
 
 	@Override
-	protected void buildInternal(MIMLInstances dataSet) throws Exception {
+	public void buildInternal(MIMLInstances dataSet) throws Exception {
 		MultiLabelInstances mlData = new MultiLabelInstances(dataSet.getDataSet(), dataSet.getLabelsMetaData());
-		LP.setDebug(getDebug());
-		LP.build(mlData);
+		BR.setDebug(getDebug());
+		BR.build(mlData);
 	}
 
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag bag) throws Exception, InvalidDataException {
-		return LP.makePrediction(bag);
+		return BR.makePrediction(bag);
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -82,6 +85,7 @@ public class MIMLLabelPowerset extends MIMLClassifier{
 			//Instance class
 			Class<? extends Classifier> baseClassifier = 
 					(Class <? extends Classifier>) Class.forName(baseName);
+				
 			String optionsAux = configuration.getString("multiInstanceClassifier[@listOptions]");
 			
 			if(optionsAux !=null){
@@ -91,20 +95,17 @@ public class MIMLLabelPowerset extends MIMLClassifier{
 			
 				((AbstractClassifier) classifier).setOptions(options);
 				
-				LP = new LabelPowerset(classifier);
+				BR = new BinaryRelevance(classifier);
 			}
 			else
-				LP = new LabelPowerset(baseClassifier.newInstance());
+				BR = new BinaryRelevance(baseClassifier.newInstance());
+	       
 			
-	        // valueParameters.
-			// Assign 
 			
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 			System.exit(1);
-		}	
-		
+		}			
 	}
-
 }

@@ -13,7 +13,7 @@
  *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-package mimlclassifier.degeneration.mimlTOml;
+package mimlclassifier.mimlTOml;
 
 
 import org.apache.commons.configuration.Configuration;
