@@ -1,6 +1,5 @@
 package mimlclassifier.lazy;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -463,9 +462,6 @@ public class MIMLkNN extends MIMLClassifier{
 		this.num_references = numReferences;
 	}
 
-	/**
-	 * @see core.IConfiguration#configure(org.apache.commons.configuration.Configuration)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Configuration configuration) {

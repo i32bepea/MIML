@@ -96,9 +96,6 @@ public class MIMLLabelPowerset extends MIMLClassifier{
 			else
 				LP = new LabelPowerset(baseClassifier.newInstance());
 			
-	        // valueParameters.
-			// Assign 
-			
 		}
 		catch(Exception e) {
 			e.printStackTrace();

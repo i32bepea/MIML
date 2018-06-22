@@ -286,6 +286,7 @@ public class ConfigLoader {
 		MIMLReport report = null;
 
 		String reportName = configuration.getString("report[@name]");
+		System.out.println(reportName);
 		//Instantiate the classifier class used in the experiment
 		Class<? extends MIMLReport> clsClass = 
 				(Class <? extends MIMLReport>) Class.forName(reportName);

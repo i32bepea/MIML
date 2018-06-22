@@ -25,6 +25,6 @@ public interface IReport {
 	 *
 	 * @return the string with the content
 	 */
-	public String toPlainText();
+	public String toString();
 	
 }

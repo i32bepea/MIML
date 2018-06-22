@@ -17,9 +17,6 @@ package mimlclassifier.mimlTOmi;
 
 import org.apache.commons.configuration.Configuration;
 
-
-
-
 import data.Bag;
 import data.MIMLInstances;
 import mimlclassifier.MIMLClassifier;
@@ -38,8 +35,7 @@ import weka.classifiers.AbstractClassifier;
  * @author Ana I. Reyes Melero
  * @author Eva Gibaja
  * @author Amelia Zafra
- * @author Álvaro A. Belmonte
- * @version 20180619
+ * @version 20170507
  *
  */
 public class MIMLBinaryRelevance extends MIMLClassifier {
@@ -75,7 +71,7 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 		return BR.makePrediction(bag);
 	}
 
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void configure(Configuration configuration) {
 		
@@ -100,8 +96,6 @@ public class MIMLBinaryRelevance extends MIMLClassifier {
 			else
 				BR = new BinaryRelevance(baseClassifier.newInstance());
 	       
-			
-			
 		}
 		catch(Exception e) {
 			e.printStackTrace();

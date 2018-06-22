@@ -10,6 +10,7 @@ import mulan.evaluation.MultipleEvaluation;
 import mulan.evaluation.measure.MacroAverageMeasure;
 import mulan.evaluation.measure.Measure;
 
+// TODO: Auto-generated Javadoc
 /**
  * Class used to generate reports with the format specified.
  * 
@@ -18,20 +19,43 @@ import mulan.evaluation.measure.Measure;
  * @author Amelia Zafra
  * @version 20180608
  */
-public class BaseMIMLReport extends MIMLReport implements IReport {
+public class BaseMIMLReport extends MIMLReport {
 	
+	/**
+	 * Instantiates a new report with a holdout evaluator.
+	 *
+	 * @param evaluation 
+	 * 				holdout evaluator
+	 * @param data 
+	 * 			the data used in the evaluation
+	 */
 	public BaseMIMLReport(Evaluation evaluation, MIMLInstances data) {
 		super(evaluation, data);
 	}
 	
+	/**
+	 * Instantiates a new report with cross-validation evaluator.
+	 *
+	 * @param evaluation 
+	 * 				cross-validation evaluator
+	 * @param data 
+	 * 			the data used in the evaluation
+	 */
 	public BaseMIMLReport(MultipleEvaluation evaluation, MIMLInstances data) {
 		super(evaluation, data);
+	}
+	
+	/**
+	 *  No-argument constructor for xml configuration.
+	 */
+	public BaseMIMLReport() {
 	}
 	
 	/**
 	 * Read the cross-validation results and transform to CSV format.
 	 *
 	 * @return the string with CSV content
+	 * @throws MulanException the mulan exception
 	 */
 	private String crossValidationToCSV() throws MulanException {
 		
@@ -150,6 +174,7 @@ public class BaseMIMLReport extends MIMLReport implements IReport {
 	 * Convert to CSV the evaluator results.
 	 *
 	 * @return the string with CSV content
+	 * @throws MulanException the mulan exception
 	 */
 	public String toCSV() throws MulanException {
 		
@@ -166,7 +191,7 @@ public class BaseMIMLReport extends MIMLReport implements IReport {
 	 *
 	 * @return the string with the content
 	 */
-	public String toPlainText() {
+	public String toString() {
 		
 		if (evaluationCrossValidation != null) {
 			return evaluationCrossValidation.toString();

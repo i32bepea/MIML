@@ -53,7 +53,7 @@ public class RunAlgorithm {
 		
 		System.out.println("Loading evaluation method");
 		Method evaluation = loader.loadEvaluator(classifier);
-		MIMLReport report = null;
+		IReport report = null;
 		
 		if("crossValidate".equals(loader.getEvalMethod())){
 			System.out.println("initializing cross validation...");
@@ -65,10 +65,11 @@ public class RunAlgorithm {
 			classifier.build(loader.getData());
 			System.out.println("Getting evaluation results...");
 			Evaluation results = (Evaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
+			System.out.println("primero no paso");
 			report = loader.loadReportHoldout(results);
 		}
 		
-		return ((IReport) report);
+		return report;
 	}
 
 	/**
@@ -87,7 +88,7 @@ public class RunAlgorithm {
 			MIMLClassifier classifier = loader.loadClassifier();
 			
 			IReport report = run(loader, classifier);
-			
+			System.out.println("por aquí no paso");
 			String filename = loader.loadReportName();
 			
 			if(filename != null) {
