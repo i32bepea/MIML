@@ -1,109 +1,118 @@
+/*    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package report;
 
-import data.MIMLInstances;
-import mulan.evaluation.Evaluation;
-import mulan.evaluation.MultipleEvaluation;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import core.IConfiguration;
+import mulan.evaluation.measure.Measure;
 
 /**
- * The Class MIMLReport.
+ * Abstract class for a MIMLReport.
+ * 
+ * @author Álvaro A. Belmonte
+ * @author Amelia Zafra
+ * @author Eva Gibaja
+ * @version 20180630
  */
-public abstract class MIMLReport implements IReport{
+public abstract class MIMLReport implements IReport, IConfiguration {
 
-	/** Cross-validation evaluator type . */
-	protected MultipleEvaluation evaluationCrossValidation;
+	/** The measures shown in the report. */
+	protected List<String> measures = null;
 	
-	/** Holdout evaluator type. */
-	protected Evaluation evaluationHoldout;
+	/** The name of the file where report is saved. */
+	protected String filename;
 	
-	/** The data. */
-	protected MIMLInstances data;
-
 	/**
-	 * Instantiates a new report with cross-validation evaluator.
+	 * Gets the measures shown in the report.
 	 *
-	 * @param evaluation 
-	 * 				cross-validation evaluator
-	 * @param data 
-	 * 			the data used in the evaluation
+	 * @return the measures
 	 */
-	public MIMLReport(MultipleEvaluation evaluation, MIMLInstances data) {
-		this.evaluationCrossValidation = evaluation;
-		this.data = data;
+	public List<String> getMeasures() {
+		return measures;
 	}
-	
+
 	/**
-	 * Instantiates a new report with a holdout evaluator.
+	 * Sets the measures shown in the report.
 	 *
-	 * @param evaluation 
-	 * 				holdout evaluator
-	 * @param data 
-	 * 			the data used in the evaluation
+	 * @param measures 
+	 * 			the new measures
+	 * @throws Exception the exception
 	 */
-	public MIMLReport(Evaluation evaluation, MIMLInstances data) {
-		this.evaluationHoldout = evaluation;
-		this.data = data;
+	public void setMeasures(List<String> measures) throws Exception {
+		this.measures = measures;
 	}
 	
 	/**
-	 *  No-argument constructor for xml configuration.
+	 * Gets the filename.
+	 *
+	 * @return the filename
 	 */
-	public MIMLReport() {
+	public String getFilename() {
+		return filename;
 	}
 
 	/**
-	 * Gets the cross-validation evaluator.
+	 * Sets the name of the file.
 	 *
-	 * @return the cross validation evaluator
+	 * @param filename 
+	 * 			the new filename
 	 */
-	public MultipleEvaluation getEvaluationCrossValidation() {
-		return evaluationCrossValidation;
-	}
-
-	/**
-	 * Sets a cross-validation evaluator.
-	 *
-	 * @param evaluationCrossValidation 
-	 * 						the new cross validation evaluator
-	 */
-	public void setEvaluationCrossValidation(MultipleEvaluation evaluationCrossValidation) {
-		this.evaluationCrossValidation = evaluationCrossValidation;
-	}
-
-	/**
-	 * Gets the holdout evaluator.
-	 *
-	 * @return the holdout evaluator
-	 */
-	public Evaluation getEvaluationHoldout() {
-		return evaluationHoldout;
-	}
-
-	/**
-	 * Sets a holdout evaluator.
-	 *
-	 * @param evaluationHoldout
-	 * 					 the new holdout evaluator
-	 */
-	public void setEvaluationHoldout(Evaluation evaluationHoldout) {
-		this.evaluationHoldout = evaluationHoldout;
-	}
-
-	/**
-	 * Gets the data.
-	 *
-	 * @return the data
-	 */
-	public MIMLInstances getData() {
-		return data;
-	}
-
-	/**
-	 * Sets the data.
-	 *
-	 * @param data the new data
-	 */
-	public void setData(MIMLInstances data) {
-		this.data = data;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 	
+	/**
+	 * Filter measures.
+	 *
+	 * @param allMeasures 
+	 * 				all the measures which the evaluation has
+	 * @return the list with the measures filtered
+	 * @throws Exception the exception
+	 */
+	protected List<Measure> filterMeasures(List<Measure> allMeasures) throws Exception{
+		
+		List<Measure> measures = new ArrayList<Measure>();
+		
+    	for(String s : this.measures) {
+    		
+    		for(Measure m : allMeasures) {
+    			
+    			if(m.getName().equals(s))
+    				measures.add(m.makeCopy());
+    		}
+    	}
+		
+		return measures;
+	}
+	
+	/**
+	 * Save in a file the specified report.
+	 */
+	public void saveReport(String report) throws FileNotFoundException {
+		
+		try (PrintWriter out = new PrintWriter(filename)) {
+			
+		    out.println(report);
+		    out.close();
+		    System.out.println("Results saved in " + filename);
+		}
+	}
+
 }

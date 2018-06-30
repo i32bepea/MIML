@@ -31,7 +31,7 @@ import transformation.mimlTOml.MIMLtoML;
  * 
  * Class implementing the degenerative algorithm for MIML data to solve it with ML learning. 
  * 
- * @author √Ålvaro A. Belmonte
+ * @author ¡lvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180608
@@ -127,15 +127,11 @@ public class MIMLClassifierML extends MIMLClassifier{
 					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
 					obj[i] =   configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
 				}
-					//En este caso el objeto debe ser del tipo asignado, deberÔøΩa recogerse como cadena, si fuere por un ejemplo un clasificador base que utilizase a su vez
 			}
-			
-			
-			
+						
 	        // valueParameters.
 			// Assign 
 			this.baseClassifier = classifierClass.getConstructor(cArg).newInstance(obj);
-			
 			
 			//Get the string with the base classifier class
 			String transformerName = configuration.getString("transformMethod[@name]");

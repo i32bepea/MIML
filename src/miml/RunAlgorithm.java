@@ -15,69 +15,31 @@
 
 package miml;
 
-import java.io.PrintWriter;
-import java.lang.reflect.Method;
-
 import core.ConfigLoader;
+import evaluation.IEvaluator;
 import mimlclassifier.MIMLClassifier;
 import mulan.data.InvalidDataFormatException;
-import mulan.evaluation.Evaluation;
-import mulan.evaluation.MultipleEvaluation;
-import report.BaseMIMLReport;
 import report.IReport;
-import report.MIMLReport;
 import weka.core.Utils;
 
 /**
  * Class that allow run any algorithm of the library configured by a
  * file configuration.
  * 
- * @author A.A Belmonte
+ * @author ¡lvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gigaja
  * @version 20180619
  */
 public class RunAlgorithm {	
-	
-	/**
-	 * Load the evaluation method and run the algorithm.
-	 *
-	 * @param loader 
-	 * 			the experiment's configuration
-	 * @param classifier 
-	 * 			the classifier used in the experiment
-	 * 
-	 * @return the reports
-	 */
-	private static IReport run(ConfigLoader loader, MIMLClassifier classifier) throws Exception {
-		
-		System.out.println("Loading evaluation method");
-		Method evaluation = loader.loadEvaluator(classifier);
-		IReport report = null;
-		
-		if("crossValidate".equals(loader.getEvalMethod())){
-			System.out.println("initializing cross validation...");
-			MultipleEvaluation results = (MultipleEvaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
-			report = loader.loadReportCrossValidation(results);
-		}
-		else if("evaluate".equals(loader.getEvalMethod())) {
-			System.out.println("Building model...");
-			classifier.build(loader.getData());
-			System.out.println("Getting evaluation results...");
-			Evaluation results = (Evaluation) evaluation.invoke(loader.getEvaluator(), loader.getParams());
-			System.out.println("primero no paso");
-			report = loader.loadReportHoldout(results);
-		}
-		
-		return report;
-	}
 
 	/**
-	 * The main method.
+	 * The main method to configure and run an algorithm.
 	 *
 	 * @param args 
 	 * 			the arguments(route of config file with the option -c)
 	 */
+	@SuppressWarnings("rawtypes")
 	public static void main(String[] args) {
 
 		try {
@@ -87,26 +49,20 @@ public class RunAlgorithm {
 			System.out.println("Loading classifier");
 			MIMLClassifier classifier = loader.loadClassifier();
 			
-			IReport report = run(loader, classifier);
-			System.out.println("por aqu√≠ no paso");
-			String filename = loader.loadReportName();
+			System.out.println("Loading evaluation method");
+			IEvaluator evaluator = loader.loadEvaluator();
+			evaluator.runExperiment(classifier);
 			
-			if(filename != null) {
-				try (PrintWriter out = new PrintWriter(filename)) {
-										
-				    out.println(report.toCSV());
-				    out.close();
-				    System.out.println("Results saved in " + filename);
-				}
-			}
+			IReport report = loader.loadReport();
 			
-			System.out.print("Results:");
-			System.out.println(report.toString());
+			report.saveReport(report.toCSV(evaluator));
+			
+			System.out.println("Results:");
+			System.out.println(report.toString(evaluator));
 			
 		} catch (InvalidDataFormatException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
-
 			e.printStackTrace();
 		}
 		

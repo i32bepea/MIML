@@ -34,7 +34,7 @@ import weka.classifiers.Classifier;
  * @author Ana I. Reyes Melero
  * @author Eva Gibaja
  * @author Amelia Zafra
- * @author √Ålvaro A. Belmonte
+ * @author ¡lvaro A. Belmonte
  * @version 20180619
  */
 public class MIMLLabelPowerset extends MIMLClassifier{

@@ -1,3 +1,18 @@
+/*    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package mimlclassifier.lazy;
 
 import java.util.HashSet;
@@ -20,7 +35,7 @@ import weka.core.matrix.SingularValueDecomposition;
 /**
  * Class implementing the MIMLkNN algorithm for MIML data.
  * 
- * @author √Ålvaro A. Belmonte
+ * @author ¡lvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180608
@@ -111,9 +126,7 @@ public class MIMLkNN extends MIMLClassifier{
 		// Initialize matrices
 		t_matrix = new double[d_size][numLabels];
 		phi_matrix = new double[d_size][numLabels];
-		
-		double startTime = System.currentTimeMillis();
-		
+				
 		calculateDatasetDistances();
 		calculateReferenceMatrix();
 		
@@ -126,8 +139,6 @@ public class MIMLkNN extends MIMLClassifier{
 		
 		weights_matrix = getWeightsMatrix();
 		
-		double stopTime = System.currentTimeMillis();
-		double elapsedTime = (stopTime - startTime)/1000;
 	}
 
 	/**

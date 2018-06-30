@@ -1,19 +1,26 @@
+/*    This program is free software; you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation; either version 2 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program; if not, write to the Free Software
+ *    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
 package core;
 
-import java.lang.reflect.Method;
-
-import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 
-import data.MIMLInstances;
+import evaluation.IEvaluator;
 import mimlclassifier.MIMLClassifier;
-import mulan.classifier.MultiLabelLearner;
-import mulan.data.MultiLabelInstances;
-import mulan.evaluation.Evaluation;
-import mulan.evaluation.Evaluator;
-import mulan.evaluation.MultipleEvaluation;
-import report.MIMLReport;
+import report.IReport;
 
 /**
  * Class used to read a xml file and configure a experiment.
@@ -26,29 +33,8 @@ import report.MIMLReport;
 public class ConfigLoader {
 
 	/**  Configuration object. */
-	protected XMLConfiguration configuration;
+	private XMLConfiguration configuration;
 	
-	/** The params of evaluator method. */
-	private Object[] params = null;
-	
-	/** The evaluator. */
-	private Evaluator evaluator = null;
-	
-	/** The type of evaluation method. */
-	private String evalMethod = null;
-	
-	/** The data. */
-	private MIMLInstances data;
-
-	/**
-	 * Gets the data.
-	 *
-	 * @return MIML data sets for train
-	 */
-	public MIMLInstances getData() {
-		return data;
-	}
-
 	/**
 	 * Gets the configuration.
 	 *
@@ -67,47 +53,6 @@ public class ConfigLoader {
 	public void setConfiguration(XMLConfiguration configuration) {
 		this.configuration = configuration;
 	}
-
-	/**
-	 * Gets the params of evaluator method.
-	 *
-	 * @return The params of evaluator method
-	 */
-	public Object[] getParams() throws Exception {
-		
-		if(params == null) {
-			System.err.println("Error, it's necessary load the evaluator first");
-			throw new Exception();
-		}
-		return params;
-	}
-	
-	/**
-	 * Gets the evaluator method.
-	 *
-	 * @return The evaluator method
-	 */
-	public Evaluator getEvaluator() throws Exception {
-		if(evaluator == null) {
-			System.err.println("Error, it's necessary load the evaluator first");
-			throw new Exception();
-		}
-		return evaluator;
-	}
-	
-	/**
-	 * Gets the type of evaluation method.
-	 *
-	 * @return The type of evaluation method
-	 */
-	public String getEvalMethod() throws Exception {
-		if(evalMethod == null) {
-			System.err.println("Error, it's necessary load the evaluator first");
-			throw new Exception();
-		}
-		return evalMethod;
-	}
-
 
 	/**
 	 * Instantiates a new config loader.
@@ -141,54 +86,6 @@ public class ConfigLoader {
 
 		return classifier;			
 	}
-	
-	/**
-	 * Load train data for holdout.
-	 *
-	 * @param configuration
-	 * 				The subset of configuration with the data route
-	 * 
-	 * @return A MIML instances
-	 */
-	private MIMLInstances loadTrainData(Configuration configuration) throws Exception  {
-		
-		String arffFileTrain = configuration.subset("data").getString("trainFile");
-		String xmlFileName = configuration.subset("data").getString("xmlFile");	
-		
-		return new MIMLInstances(arffFileTrain, xmlFileName);
-	}
-	
-	/**
-	 * Load test data for holdout.
-	 *
-	 * @param configuration
-	 * 				The subset of configuration with the data route
-	 * 
-	 * @return A MIML instances
-	 */
-	private MIMLInstances loadTestData(Configuration configuration) throws Exception  {
-		
-		String arffFileTest = configuration.subset("data").getString("testFile");
-		String xmlFileName = configuration.subset("data").getString("xmlFile");	
-		
-		return new MIMLInstances(arffFileTest, xmlFileName);	
-	}
-		
-	/**
-	 * Load data for cross-validation.
-	 *
-	 * @param configuration
-	 * 				The subset of configuration with the data route
-	 * 
-	 * @return A MIML instances
-	 */
-	private MIMLInstances loadData(Configuration configuration) throws Exception  {
-		
-		String arffFileTest = configuration.subset("data").getString("file");
-		String xmlFileName = configuration.subset("data").getString("xmlFile");	
-		
-		return new MIMLInstances(arffFileTest, xmlFileName);	
-	}
 
 	/**
 	 * Load name of report file to save the experiment's results.
@@ -202,64 +99,22 @@ public class ConfigLoader {
 		return filename;
 	}
 	
-	/**
-	 * Load the evaluator method used to train the classifier.
-	 *
-	 * @param classifier
-	 * 				Classifier which is going to be evaluated
-	 * 
-	 * @return The method to evaluate the classifier
-	 */
-	@SuppressWarnings("rawtypes")
-	public Method loadEvaluator(MIMLClassifier classifier) throws Exception {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public IEvaluator loadEvaluator() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		
-		evaluator = (Evaluator) Class.forName("mulan.evaluation.Evaluator").newInstance();
-		
-		evalMethod = configuration.getString("evaluator[@method]");
-		
-		Configuration subConfiguration = configuration.subset("evaluator"); //getProperty("multiLable")
-	
-		Class[] parameterTypes = new Class[3];
-		params = new Object[3];
-		
-		parameterTypes[0] = MultiLabelLearner.class;
-		params[0] = classifier;
-				
-		if ("cross-validation".equals(evalMethod)) {
-			
-			evalMethod = "crossValidate";
-			// load train data
-			MIMLInstances data = loadData(subConfiguration);
-			parameterTypes[1] = MultiLabelInstances.class;
-			params[1] = data;
-			
-			// load folds' number
-			int numFolds = subConfiguration.getInt("numFolds");
-			parameterTypes[2] = int.class;
-			params[2] = numFolds;
-			
-			this.data = data;
-				
-		}
-		else if ("train-test".equals(evalMethod)) {
-			
-			evalMethod = "evaluate";
-			// load train data
-			MIMLInstances train = loadTrainData(subConfiguration);
-			parameterTypes[1] = MultiLabelInstances.class;
-			params[1] = train;
+		IEvaluator evaluator = null;
 
-			// load test data
-			MIMLInstances test = loadTestData(subConfiguration);
-			parameterTypes[2] = MultiLabelInstances.class;
-			params[2] = test;
-			
-			this.data = train;					
-		}
+		String evalName = configuration.getString("evaluator[@name]");
+		//Instantiate the evaluator class used in the experiment
+		Class<? extends IEvaluator> evalClass = 
+				(Class <? extends IEvaluator>) Class.forName(evalName);
 		
-		Method method = evaluator.getClass().getMethod(evalMethod, parameterTypes);
-		
-		return method;
+		evaluator = (IEvaluator) evalClass.newInstance();
+		//Configure the evaluator
+		if(evaluator instanceof IEvaluator)
+			((IConfiguration) evaluator).configure(configuration.subset("evaluator"));
+
+		return evaluator;			
 	}
 	
 	/**
@@ -270,45 +125,21 @@ public class ConfigLoader {
 	 * @return the MIML report
 	 */
 	@SuppressWarnings("unchecked")
-	public MIMLReport loadReportCrossValidation(MultipleEvaluation evaluator) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public IReport loadReport() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		
-		MIMLReport report = null;
+		IReport report = null;
 
 		String reportName = configuration.getString("report[@name]");
-		//Instantiate the classifier class used in the experiment
-		Class<? extends MIMLReport> clsClass = 
-				(Class <? extends MIMLReport>) Class.forName(reportName);
 		
-		report = (MIMLReport) clsClass.newInstance();
+		//Instantiate the report class used in the experiment
+		Class<? extends IReport> clsClass = 
+				(Class <? extends IReport>) Class.forName(reportName);
 		
-		report.setEvaluationCrossValidation(evaluator);
-		report.setData(data);
-
-		return report;			
-	}
-	
-	/**
-	 * Load report for cross-validation.
-	 *
-	 * @param evaluator 
-	 * 			the evaluator used in cross-validation
-	 * @return the MIML report
-	 */
-	@SuppressWarnings("unchecked")
-	public MIMLReport loadReportHoldout(Evaluation evaluator) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		report = (IReport) clsClass.newInstance();
 		
-		MIMLReport report = null;
-
-		String reportName = configuration.getString("report[@name]");
-		System.out.println(reportName);
-		//Instantiate the classifier class used in the experiment
-		Class<? extends MIMLReport> clsClass = 
-				(Class <? extends MIMLReport>) Class.forName(reportName);
-		
-		report = (MIMLReport) clsClass.newInstance();
-		
-		report.setEvaluationHoldout(evaluator);
-		report.setData(data);
+		//Configure the report
+		if(report instanceof IReport)
+			((IConfiguration) report).configure(configuration.subset("report"));
 
 		return report;			
 	}
