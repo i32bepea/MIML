@@ -32,6 +32,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SerializedObject;
 
+
 /**
  * Abstract class for a MIMLClassifier.
  * 
@@ -46,8 +47,10 @@ import weka.core.SerializedObject;
 public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier, MultiLabelLearner,  Serializable {
 
 	
-	/** for serialization */
+	/**  for serialization. */
 	private static final long serialVersionUID = -517275642740330327L;
+	
+	/** The is model initialized. */
 	protected boolean isModelInitialized = false;
 	/**
 	 * The number of labels the learner can handle. The number of labels is
@@ -74,16 +77,22 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 	 */
 	protected int[] featureIndices;
 
-	/** Whether debugging is on/off */
+	/**  Whether debugging is on/off. */
 	private boolean isDebug = false;
 	
-	//@Override
+	/* (non-Javadoc)
+	 * @see mulan.classifier.MultiLabelLearner#isUpdatable()
+	 */
+	@Override
 	public boolean isUpdatable() {
 		/** as default learners are assumed not to be updatable. */
 		return false;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mulan.classifier.MultiLabelLearner#build(mulan.data.MultiLabelInstances)
+	 */
 	public final void build(MultiLabelInstances trainingSet) throws Exception {
 		
 		
@@ -102,6 +111,9 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 		isModelInitialized = true;
 	}
 
+	/* (non-Javadoc)
+	 * @see mimlclassifier.IMIMLClassifier#build(data.MIMLInstances)
+	 */
 	public final void build(MIMLInstances trainingSet) throws Exception {
 		
 				
@@ -120,6 +132,9 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 		isModelInitialized = true;
 	}
 
+	/* (non-Javadoc)
+	 * @see mimlclassifier.IMIMLClassifier#makePrediction(weka.core.Instance)
+	 */
 	@Override
 	public final MultiLabelOutput makePrediction(Instance instance)
 			throws Exception, InvalidDataException, ModelInitializationException {
@@ -133,11 +148,17 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 		return makePredictionInternal(new Bag(instance));
 	}
 
+	/* (non-Javadoc)
+	 * @see mimlclassifier.IMIMLClassifier#setDebug(boolean)
+	 */
 	@Override
 	public void setDebug(boolean debug) {
 		isDebug = debug;
 	}
 
+	/* (non-Javadoc)
+	 * @see mulan.classifier.MultiLabelLearner#makeCopy()
+	 */
 	public MIMLClassifier  makeCopy() throws Exception {
 		return (MIMLClassifier) new SerializedObject(this).getObject();
 	}
@@ -195,14 +216,11 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 	 * {@link #makePrediction(weka.core.Instance)} which guards for model
 	 * initialization and apply common handling/behavior.
 	 *
-	 * @param instance
-	 *            the data instance to predict on.
-	 * @throws Exception
-	 *             if an error occurs while making the prediction.
-	 * @throws InvalidDataException
-	 *             if specified instance data is invalid and can not be
-	 *             processed by the learner.
+	 * @param instance            the data instance to predict on.
 	 * @return the output of the learner for the given instance.
+	 * @throws Exception             if an error occurs while making the prediction.
+	 * @throws InvalidDataException             if specified instance data is invalid and can not be
+	 *             processed by the learner.
 	 */
 	protected abstract MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException;
 

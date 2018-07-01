@@ -39,22 +39,25 @@ import transformation.mimlTOml.MIMLtoML;
  */
 public class MIMLClassifierML extends MIMLClassifier{
 
-	/** For serialization */
+	/**  For serialization. */
 	private static final long serialVersionUID = 1L;
 
-	/** A BinaryRelevance classifier */
+	/**  A BinaryRelevance classifier. */
 	//private BinaryRelevance BR;
 	MultiLabelLearner baseClassifier;
+	
+	/** The transform method. */
 	MIMLtoML transformMethod;
+	
+	/** The miml dataset. */
 	MIMLInstances mimlDataset;
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param baseClassifier
-	 *            Classifier
-	 * @throws Exception
-	 *             To be handled in an upper level.
+	 *
+	 * @param baseClassifier            Classifier
+	 * @param transformMethod the transform method
+	 * @throws Exception             To be handled in an upper level.
 	 */
 	public MIMLClassifierML(MultiLabelLearner baseClassifier, MIMLtoML transformMethod) throws Exception {
 		super();
@@ -62,11 +65,17 @@ public class MIMLClassifierML extends MIMLClassifier{
 		this.transformMethod = transformMethod;
 	}
 
+	/**
+	 * Instantiates a new MIML classifier ML.
+	 */
 	public MIMLClassifierML() {
 		super();
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mimlclassifier.MIMLClassifier#buildInternal(data.MIMLInstances)
+	 */
 	@Override
 	public void buildInternal(MIMLInstances mimlDataSet) throws Exception {
 		
@@ -76,11 +85,17 @@ public class MIMLClassifierML extends MIMLClassifier{
 		baseClassifier.build(result);
 	}
 
+	/* (non-Javadoc)
+	 * @see mimlclassifier.MIMLClassifier#makePredictionInternal(data.Bag)
+	 */
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag bag) throws Exception, InvalidDataException {
 		return baseClassifier.makePrediction(bag);
 	}
 
+	/* (non-Javadoc)
+	 * @see core.IConfiguration#configure(org.apache.commons.configuration.Configuration)
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public void configure(Configuration configuration) {
