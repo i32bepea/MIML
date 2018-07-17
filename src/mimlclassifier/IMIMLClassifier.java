@@ -17,15 +17,13 @@ package mimlclassifier;
 
 import java.io.Serializable;
 
-
-
 import data.MIMLInstances;
 import mulan.classifier.MultiLabelOutput;
 import weka.core.Instance;
 
 
 /**
- * The Interface for MIML classifiers.
+ * Common interface for MIML classifiers.
  *
  * @author Álvaro A. Belmonte
  * @author Amelia Zafra

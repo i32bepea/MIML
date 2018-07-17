@@ -14,14 +14,11 @@
  */
 package mimlclassifier;
 
-import java.io.Serializable;
-
 import java.util.Date;
 
 import core.IConfiguration;
 import data.Bag;
 import data.MIMLInstances;
-
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
 import mulan.classifier.MultiLabelLearner;
@@ -44,7 +41,7 @@ import weka.core.SerializedObject;
  *
  *
  */
-public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier, MultiLabelLearner,  Serializable {
+public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier, MultiLabelLearner {
 
 	
 	/**  for serialization. */
@@ -156,11 +153,9 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 		isDebug = debug;
 	}
 
-	/* (non-Javadoc)
-	 * @see mulan.classifier.MultiLabelLearner#makeCopy()
-	 */
-	public MIMLClassifier  makeCopy() throws Exception {
-		return (MIMLClassifier) new SerializedObject(this).getObject();
+
+	public MultiLabelLearner  makeCopy() throws Exception {
+		return (MultiLabelLearner) new SerializedObject(this).getObject();
 	}
 
 	/**
@@ -182,6 +177,7 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 	public boolean getDebug() {
 		return isDebug;
 	}
+
 
 	/**
 	 * Writes the debug message string to the console output if debug for the

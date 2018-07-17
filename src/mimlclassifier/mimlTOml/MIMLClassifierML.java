@@ -42,8 +42,7 @@ public class MIMLClassifierML extends MIMLClassifier{
 	/**  For serialization. */
 	private static final long serialVersionUID = 1L;
 
-	/**  A BinaryRelevance classifier. */
-	//private BinaryRelevance BR;
+	/**  A Generic MultiLabel classifier. */
 	MultiLabelLearner baseClassifier;
 	
 	/** The transform method. */

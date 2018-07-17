@@ -477,12 +477,12 @@ public class MIMLkNN extends MIMLClassifier{
 	@Override
 	public void configure(Configuration configuration) {
 		
-		this.num_references = configuration.getInt("nReferences");
-		this.num_citers = configuration.getInt("nCiters");
+		this.num_references = configuration.getInt("nReferences",1);
+		this.num_citers = configuration.getInt("nCiters",1);
 		
 		try {
 			//Get the name of the metric class
-			String metricName = configuration.getString("metric[@name]");
+			String metricName = configuration.getString("metric[@name]","core.distance.AverageHausdorff");
 			//Instance class
 			Class<? extends IDistance> metricClass = 
 					(Class <? extends IDistance>) Class.forName(metricName);
