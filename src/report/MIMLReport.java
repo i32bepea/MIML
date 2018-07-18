@@ -26,7 +26,7 @@ import mulan.evaluation.measure.Measure;
 /**
  * Abstract class for a MIMLReport.
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gibaja
  * @version 20180630

@@ -19,13 +19,14 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 
 import evaluation.IEvaluator;
+import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 import report.IReport;
 
 /**
  * Class used to read a xml file and configure a experiment.
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gigaja
  * @version 20180619
@@ -58,7 +59,8 @@ public class ConfigLoader {
 	 * Instantiates a new config loader.
 	 *
 	 * @param filename
-	 * 				the name of config file
+	 *  				the name of config file
+	 * @throws ConfigurationException the configuration exception
 	 */
 	public ConfigLoader(String filename) throws ConfigurationException {
 		configuration = new XMLConfiguration(filename);
@@ -68,37 +70,34 @@ public class ConfigLoader {
 	 * Read current configuration to load and configure the classifier.
 	 *
 	 * @return A MIML classifier
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("unchecked")
-	public MIMLClassifier loadClassifier() throws Exception {
+	public IMIMLClassifier loadClassifier() throws Exception {
 
-		MIMLClassifier classifier = null;
+		IMIMLClassifier classifier = null;
 
 		String clsName = configuration.getString("classifier[@name]");
 		//Instantiate the classifier class used in the experiment
-		Class<? extends MIMLClassifier> clsClass = 
-				(Class <? extends MIMLClassifier>) Class.forName(clsName);
+		Class<? extends IMIMLClassifier> clsClass = 
+				(Class <? extends IMIMLClassifier>) Class.forName(clsName);
 		
 		classifier = (MIMLClassifier) clsClass.newInstance();
 		//Configure the classifier
-		if(classifier instanceof MIMLClassifier)
+		if(classifier instanceof IMIMLClassifier)
 			((IConfiguration) classifier).configure(configuration.subset("classifier"));
 
 		return classifier;			
 	}
-
-	/**
-	 * Load name of report file to save the experiment's results.
-	 *
-	 * @return Filename
-	 */
-	public String loadReportName() {
-		
-		String filename = configuration.subset("report").getString("fileName", null);
-		
-		return filename;
-	}
 	
+	/**
+	 * Read current configuration to load and configure the evaluator.
+	 *
+	 * @return A evaluator for MIML Classifiers
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public IEvaluator loadEvaluator() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		
@@ -118,11 +117,12 @@ public class ConfigLoader {
 	}
 	
 	/**
-	 * Load report for cross-validation.
+	 * Read current configuration to load and configure the report.
 	 *
-	 * @param evaluator 
-	 * 			the evaluator used in cross-validation
 	 * @return the MIML report
+	 * @throws ClassNotFoundException the class not found exception
+	 * @throws InstantiationException the instantiation exception
+	 * @throws IllegalAccessException the illegal access exception
 	 */
 	@SuppressWarnings("unchecked")
 	public IReport loadReport() throws ClassNotFoundException, InstantiationException, IllegalAccessException {

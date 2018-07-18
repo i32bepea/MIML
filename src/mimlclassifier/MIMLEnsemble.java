@@ -33,7 +33,7 @@ import weka.filters.unsupervised.instance.Resample;
 /**
  * Class implementing the MIMLkNN algorithm for MIML data.
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180717
@@ -66,7 +66,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 	 */
 	protected int numClassifiers = 5;
 
-	/** Base learner */
+	/**  Base learner. */
 	protected MultiLabelLearner baseLearner;
 
 	/**

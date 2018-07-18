@@ -35,7 +35,7 @@ import weka.core.matrix.SingularValueDecomposition;
 /**
  * Class implementing the MIMLkNN algorithm for MIML data.
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180608
@@ -92,10 +92,10 @@ public class MIMLkNN extends MIMLClassifier{
 	}
 	
 	/**
-	 * Instantiates a new MIMlkNN with values by default
+	 * Instantiates a new MIMlkNN with values by default.
 	 *
-	 * @param metric 
-	 * 				the metric used by the algorithm to measure the distance
+	 * @param metric 				
+	 * 			the metric used by the algorithm to measure the distance
 	 */
 	public MIMLkNN(IDistance metric) {
 		this.metric = metric;
@@ -194,7 +194,9 @@ public class MIMLkNN extends MIMLClassifier{
 	
 	/**
 	 * Calculate the distances matrix of current data set 
-	 * with the metric assigned
+	 * with the metric assigned.
+	 *
+	 * @throws Exception the exception
 	 */
 	private void calculateDatasetDistances() throws Exception {
 
@@ -215,6 +217,8 @@ public class MIMLkNN extends MIMLClassifier{
 	
 	/**
 	 * Calculate the references matrix.
+	 *
+	 * @throws Exception the exception
 	 */
 	private void calculateReferenceMatrix() throws Exception {
 		
@@ -233,10 +237,10 @@ public class MIMLkNN extends MIMLClassifier{
 	 * Calculate the references of a bag specified by its index.
 	 * It's necessary calculate the distance matrix previously.
 	 *
-	 * @param indexBag 
-	 * 			the index bag
-	 * 
+	 * @param indexBag
+	 *  			the index bag
 	 * @return the references' indices of the bag
+	 * @throws Exception the exception
 	 */
 	private int[] calculateBagReferences(int indexBag) throws Exception {
 		// Nearest neighbors of the selected bag
@@ -473,6 +477,9 @@ public class MIMLkNN extends MIMLClassifier{
 		this.num_references = numReferences;
 	}
 
+	/* (non-Javadoc)
+	 * @see core.IConfiguration#configure(org.apache.commons.configuration.Configuration)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void configure(Configuration configuration) {

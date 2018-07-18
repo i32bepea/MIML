@@ -32,7 +32,7 @@ import weka.classifiers.Classifier;
  * 
  * Class implementing the degenerative algorithm for MIML data to solve it with MI learning. 
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180701

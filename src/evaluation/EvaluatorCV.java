@@ -19,7 +19,8 @@ import org.apache.commons.configuration.Configuration;
 
 import core.IConfiguration;
 import data.MIMLInstances;
-import mimlclassifier.MIMLClassifier;
+import mimlclassifier.IMIMLClassifier;
+import mulan.classifier.MultiLabelLearner;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluator;
 import mulan.evaluation.MultipleEvaluation;
@@ -27,7 +28,7 @@ import mulan.evaluation.MultipleEvaluation;
 /**
  * Class that allow evaluate an algorithm applying a cross-validation method
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180630
@@ -49,7 +50,7 @@ public class EvaluatorCV implements IConfiguration, IEvaluator<MultipleEvaluatio
 	 *
 	 * @param data 
 	 * 			the data used in the experiment
-	 * @param numfolds 
+	 * @param numFolds 
 	 * 			the number of folds used in the cross-validation
 	 */
 	public EvaluatorCV(MIMLInstances data, int numFolds) {
@@ -68,10 +69,10 @@ public class EvaluatorCV implements IConfiguration, IEvaluator<MultipleEvaluatio
 	 * @see evaluation.IEvaluator#runExperiment(mimlclassifier.MIMLClassifier)
 	 */
 	@Override
-	public void runExperiment(MIMLClassifier classifier) {
+	public void runExperiment(IMIMLClassifier classifier) {
 		Evaluator eval = new Evaluator();
 		System.out.println("initializing cross validation");
-		evaluation = eval.crossValidate(classifier, data, numFolds);
+		evaluation = eval.crossValidate((MultiLabelLearner) classifier, data, numFolds);
 	}
 
 	/* (non-Javadoc)

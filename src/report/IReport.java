@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import evaluation.IEvaluator;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Interface for generate reports with the format specified.
  * 
@@ -33,7 +34,12 @@ public interface IReport {
 	/**
 	 * Convert to CSV the evaluator results.
 	 *
+	 * @param evaluator 
+	 * 			the evaluator with the measures
+	 * 
 	 * @return the string with CSV content
+	 * 
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("rawtypes")
 	public String toCSV(IEvaluator evaluator) throws Exception;
@@ -41,7 +47,12 @@ public interface IReport {
 	/**
 	 * Convert to plain text the evaluator results.
 	 *
+	 * @param evaluator 
+	 * 			the evaluator with the measures
+	 * 
 	 * @return the string with the content
+	 * 
+	 * @throws Exception the exception
 	 */
 	@SuppressWarnings("rawtypes")
 	public String toString(IEvaluator evaluator) throws Exception;
@@ -49,6 +60,10 @@ public interface IReport {
 	/**
 	 * Save in a file the specified report.
 	 *
+	 * @param report
+	 * 			 the formatted string to be saved
+	 * 
+	 * @throws FileNotFoundException the file not found exception
 	 */
 	public void saveReport(String report) throws FileNotFoundException;
 	

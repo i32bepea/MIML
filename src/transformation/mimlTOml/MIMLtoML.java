@@ -36,13 +36,16 @@ import weka.core.Instances;
 public abstract class MIMLtoML implements Serializable{
 
 	
-	/** For serialization */
+	/**  For serialization. */
 	private static final long serialVersionUID = 7781084385932342107L;
-	/** Array of updated label indices */
+	
+	/**  Array of updated label indices. */
 	protected int updatedLabelIndices[];
-	/** Template to store Instances */
+	
+	/**  Template to store Instances. */
 	protected Instances template = null;
-	/** Original data set of MIMLInstances */
+	
+	/**  Original data set of MIMLInstances. */
 	protected MIMLInstances dataset = null;
 
 	/**
@@ -56,10 +59,11 @@ public abstract class MIMLtoML implements Serializable{
 
 	/**
 	 * Transforms {@link MIMLInstances} into MultiLabelInstances.
-	 * 
+	 *
+	 * @param dataset
+	 * 		 the dataset to be transformed
 	 * @return MultiLabelInstances.
-	 * @throws Exception
-	 *             To be handled in an upper level.
+	 * @throws Exception             To be handled in an upper level.
 	 */
 	public abstract MultiLabelInstances transformDataset(MIMLInstances dataset) throws Exception;
 	

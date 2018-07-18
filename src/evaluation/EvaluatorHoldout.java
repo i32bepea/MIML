@@ -19,7 +19,8 @@ import org.apache.commons.configuration.Configuration;
 
 import core.IConfiguration;
 import data.MIMLInstances;
-import mimlclassifier.MIMLClassifier;
+import mimlclassifier.IMIMLClassifier;
+import mulan.classifier.MultiLabelLearner;
 import mulan.data.InvalidDataFormatException;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
@@ -28,7 +29,7 @@ import mulan.evaluation.Evaluator;
 /**
  * Class that allow evaluate an algorithm applying a holdout method.
  *
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180630
@@ -69,7 +70,7 @@ public class EvaluatorHoldout implements IConfiguration, IEvaluator<Evaluation> 
 	 * @see evaluation.IEvaluator#runExperiment(mimlclassifier.MIMLClassifier)
 	 */
 	@Override
-	public void runExperiment(MIMLClassifier classifier) {
+	public void runExperiment(IMIMLClassifier classifier) {
 		
 		Evaluator eval = new Evaluator();
 		
@@ -77,7 +78,7 @@ public class EvaluatorHoldout implements IConfiguration, IEvaluator<Evaluation> 
 		try {
 			classifier.build(trainData);
 			System.out.println("Getting evaluation results");
-			evaluation = eval.evaluate(classifier, testData, trainData);
+			evaluation = eval.evaluate((MultiLabelLearner) classifier, testData, trainData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

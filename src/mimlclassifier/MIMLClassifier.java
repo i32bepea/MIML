@@ -36,7 +36,7 @@ import weka.core.SerializedObject;
  * @author Ana I. Reyes
  * @author Eva Gibaja
  * @author Amelia Zafra
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @version 20180619
  *
  *

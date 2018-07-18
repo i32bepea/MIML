@@ -48,7 +48,9 @@ public class BaseMIMLReport extends MIMLReport {
 	/**
 	 * Read the cross-validation results and transform to CSV format.
 	 *
+	 * @param evaluator the evaluator
 	 * @return the string with CSV content
+	 * @throws Exception the exception
 	 */
 	private String crossValidationToCSV(EvaluatorCV evaluator) throws Exception {
 		
@@ -125,8 +127,9 @@ public class BaseMIMLReport extends MIMLReport {
 	/**
 	 * Read the holdout results and transform to CSV format.
 	 *
+	 * @param evaluator the evaluator
 	 * @return the string with CSV content
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	private String holdoutToCSV(EvaluatorHoldout evaluator) throws Exception {
 		
@@ -182,10 +185,11 @@ public class BaseMIMLReport extends MIMLReport {
 	}
 	
 	/**
-	 * Read the cross-validation results and transform to plain text
+	 * Read the cross-validation results and transform to plain text.
 	 *
+	 * @param evaluator the evaluator
 	 * @return the string with the content
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	private String crossValidationToString(EvaluatorCV evaluator) throws Exception {
 		
@@ -229,10 +233,11 @@ public class BaseMIMLReport extends MIMLReport {
 	}
 	
 	/**
-	 * Read the holdout results and transform to plain text
+	 * Read the holdout results and transform to plain text.
 	 *
+	 * @param evaluator the evaluator
 	 * @return the string with the content
-	 * @throws Exception 
+	 * @throws Exception the exception
 	 */
 	private String holdoutToString(EvaluatorHoldout evaluator) throws Exception {
 		
@@ -262,10 +267,8 @@ public class BaseMIMLReport extends MIMLReport {
         return sb.toString();
 	}
 	
-	/**
-	 * Convert to CSV the evaluator results.
-	 *
-	 * @return the string with CSV content
+	/* (non-Javadoc)
+	 * @see report.IReport#toCSV(evaluation.IEvaluator)
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -279,11 +282,8 @@ public class BaseMIMLReport extends MIMLReport {
 		}
 	}
 	
-	/**
-	 * Convert to plain text the evaluator results.
-	 *
-	 * @return the string with the content
-	 * @throws Exception 
+	/* (non-Javadoc)
+	 * @see report.IReport#toString(evaluation.IEvaluator)
 	 */
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -296,6 +296,9 @@ public class BaseMIMLReport extends MIMLReport {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see core.IConfiguration#configure(org.apache.commons.configuration.Configuration)
+	 */
 	@Override
 	public void configure(Configuration configuration) {
 		this.filename = configuration.getString("fileName");

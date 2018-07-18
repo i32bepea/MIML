@@ -22,9 +22,9 @@ import weka.core.Instances;
 
 /**
  * Class that implements Minimal Hausdorff metric to measure 
- * the distance between 2 bags of a data set
- * 
- * @author Álvaro A. Belmonte
+ * the distance between 2 bags of a data set.
+ *
+ * @author Alvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gigaja
  * @version 20180619
@@ -35,15 +35,8 @@ public class MinimalHausdorff implements IDistance {
 	private static final long serialVersionUID = -4225065329008023904L;
 
 
-	/**
-	 * Get the minimal Hausdorff distance between two bags.
-	 *
-	 * @param first
-	 * 			first Bag
-	 * @param seconf
-	 * 			second Bag
-	 * 
-	 * @return distance between two bags
+	/* (non-Javadoc)
+	 * @see core.distance.IDistance#distance(data.Bag, data.Bag)
 	 */
 	@Override
 	public double distance(Bag first, Bag second) throws Exception {
@@ -65,15 +58,8 @@ public class MinimalHausdorff implements IDistance {
 		return finalDistance;
 	}
 
-	/**
-	 * Get the minimal Hausdorff distance between two bags in the form of a set of instances.
-	 *
-	 * @param first
-	 * 			first Bag as Instances
-	 * @param second
-	 * 			second Bag as Instances
-	 * 
-	 * @return distance between two bags
+	/* (non-Javadoc)
+	 * @see core.distance.IDistance#distance(weka.core.Instances, weka.core.Instances)
 	 */
 	@Override
 	public double distance(Instances first, Instances second) throws Exception {

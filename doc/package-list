@@ -1,6 +1,15 @@
+core
+core.distance
 data
 data.statistics
+evaluation
+miml
 mimlclassifier
-transformation.mimlTOmil
+mimlclassifier.inprogress
+mimlclassifier.lazy
+mimlclassifier.mimlTOmi
+mimlclassifier.mimlTOml
+report
+transformation.mimlTOmi
 transformation.mimlTOml
 tutorial

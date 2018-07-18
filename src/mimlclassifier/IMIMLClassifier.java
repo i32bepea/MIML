@@ -25,7 +25,7 @@ import weka.core.Instance;
 /**
  * Common interface for MIML classifiers.
  *
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Amelia Zafra
  * @author Eva Gigaja
  * @version 20180619
@@ -36,10 +36,11 @@ public interface IMIMLClassifier extends Serializable{
 	/**
 	 * Make a prediction.
 	 *
-	 * @param instance 
+	 * @param instance 			
 	 * 			the instance to be predicted
-	 * 
 	 * @return the multi label output
+	 * 
+	 * @throws Exception the exception
 	 */
 	public MultiLabelOutput makePrediction(Instance instance) throws Exception;
 	
@@ -47,8 +48,10 @@ public interface IMIMLClassifier extends Serializable{
 	/**
 	 * Builds the classifier.
 	 *
-	 * @param trainingSet 
-	 * 				the training set
+	 * @param trainingSet 				
+	 * 			the training set
+	 * 
+	 * @throws Exception the exception
 	 */
 	public void build(MIMLInstances trainingSet) throws Exception; 
 	

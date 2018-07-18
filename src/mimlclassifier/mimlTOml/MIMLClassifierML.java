@@ -31,7 +31,7 @@ import transformation.mimlTOml.MIMLtoML;
  * 
  * Class implementing the degenerative algorithm for MIML data to solve it with ML learning. 
  * 
- * @author Álvaro A. Belmonte
+ * @author Alvaro A. Belmonte
  * @author Eva Gibaja
  * @author Amelia Zafra
  * @version 20180608
