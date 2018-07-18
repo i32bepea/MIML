@@ -65,10 +65,9 @@ public class MIMLClassifierML extends MIMLClassifier{
 	}
 
 	/**
-	 * Instantiates a new MIML classifier ML.
+	 *  No-argument constructor for xml configuration.
 	 */
 	public MIMLClassifierML() {
-		super();
 	}
 	
 	

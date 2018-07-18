@@ -57,6 +57,12 @@ public class MIMLClassifierMI extends MIMLClassifier{
 		this.transformationClassifier = transformationClassifier;
 	}
 	
+	/**
+	 *  No-argument constructor for xml configuration.
+	 */
+	public MIMLClassifierMI() {
+	}
+	
 	/* (non-Javadoc)
 	 * @see mimlclassifier.MIMLClassifier#buildInternal(data.MIMLInstances)
 	 */
@@ -97,19 +103,20 @@ public class MIMLClassifierMI extends MIMLClassifier{
 			Class<? extends Classifier> baseClassifier = 
 					(Class <? extends Classifier>) Class.forName(baseName);
 			//Check if options is setted
-			String optionsAux = configuration.getString("multiInstanceClassifier[@listOptions]");
-			
+			String optionsAux = configuration.subset("multiInstanceClassifier").getString("listOptions");
+
 			if(optionsAux !=null){
 				String []  options = optionsAux.split(" ");
-			
+				
 				Classifier classifier = baseClassifier.newInstance();
 			
 				((AbstractClassifier) classifier).setOptions(options);
 				
 				transformationClassifier = clsClass.getConstructor(Classifier.class).newInstance(classifier);
 			}
-			else
-				transformationClassifier = clsClass.getConstructor(Classifier.class).newInstance(baseClassifier);
+			else {
+				transformationClassifier = clsClass.getConstructor(Classifier.class).newInstance(baseClassifier.newInstance());		
+			}
 	       
 		}
 		catch(Exception e) {
