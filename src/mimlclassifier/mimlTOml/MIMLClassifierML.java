@@ -77,10 +77,9 @@ public class MIMLClassifierML extends MIMLClassifier{
 	@Override
 	public void buildInternal(MIMLInstances mimlDataSet) throws Exception {
 		
-		// Transforms a complete dataset
-		MultiLabelInstances result = transformMethod.transformDataset(mimlDataSet);
-		
-		baseClassifier.build(result);
+		// Transforms a dataset
+		MultiLabelInstances mlDataSet = transformMethod.transformDataset(mimlDataSet);
+		baseClassifier.build(mlDataSet);
 	}
 
 	/* (non-Javadoc)
@@ -115,6 +114,7 @@ public class MIMLClassifierML extends MIMLClassifier{
 			Object [] obj = new Object [parameterLength];
 				
 			for(int i=0; i<parameterLength; i++){
+			
 				if(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")").equals("int.class")){
 					cArg[i] = int.class;
 					obj[i] =  configuration.getInt("multiLabelClassifier.parameters.valueParameters("+i+")");
@@ -137,14 +137,18 @@ public class MIMLClassifierML extends MIMLClassifier{
 				}
 				//A�adir el resto:long,short,boolean, ....,
 				else{
-					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
-					obj[i] =   configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
+//					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
+//					obj[i] =  configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");
+					
+					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")"));
+					obj[i] =  Class.forName(configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")")).newInstance(); 
 				}
+				
+					
+
 			}
-						
-	        // valueParameters.
-			// Assign 
-			this.baseClassifier = classifierClass.getConstructor(cArg).newInstance(obj);
+			
+			this.baseClassifier = (MultiLabelLearner) classifierClass.getConstructor(cArg).newInstance(obj);
 			
 			//Get the string with the base classifier class
 			String transformerName = configuration.getString("transformMethod[@name]");

@@ -24,6 +24,7 @@ import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
+import mulan.classifier.transformation.TransformationBasedMultiLabelLearner;
 import mulan.data.MultiLabelInstances;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
@@ -116,6 +117,10 @@ public class MIMLClassifierMI extends MIMLClassifier{
 			}
 			else {
 				transformationClassifier = clsClass.getConstructor(Classifier.class).newInstance(baseClassifier.newInstance());		
+			}
+			
+			if(!(transformationClassifier instanceof TransformationBasedMultiLabelLearner)) {
+				throw new Exception("Transformation method must be a instance of TransformationBasedMultiLabelLearner class");
 			}
 	       
 		}

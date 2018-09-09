@@ -14,7 +14,7 @@
  */
 
 
-package mimlclassifier;
+package mimlclassifier.meta;
 
 import java.util.Arrays;
 
@@ -23,6 +23,8 @@ import org.apache.commons.configuration.Configuration;
 import core.IConfiguration;
 import data.Bag;
 import data.MIMLInstances;
+import mimlclassifier.IMIMLClassifier;
+import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
@@ -67,7 +69,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 	protected int numClassifiers = 5;
 
 	/**  Base learner. */
-	protected MultiLabelLearner baseLearner;
+	protected IMIMLClassifier baseLearner;
 
 	/**
 	 * The ensemble of MultiLabelLearners. To be initialized by the builder method
@@ -87,7 +89,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 	 * @param baseLearner            The base learner to be used
 	 * @param numClassifiers            The number of base classifiers in the ensemble
 	 */
-	public MIMLEnsemble(MultiLabelLearner baseLearner, int numClassifiers) {
+	public MIMLEnsemble(IMIMLClassifier baseLearner, int numClassifiers) {
 		this.baseLearner = baseLearner;
 		this.numClassifiers = numClassifiers;
 	}
@@ -102,7 +104,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 		ensemble = new MIMLClassifier[numClassifiers];
 
 		for (int i = 0; i < numClassifiers; i++) {
-			ensemble[i] = (IMIMLClassifier) baseLearner.makeCopy(); 
+			ensemble[i] = baseLearner.makeCopy(); 
 			Instances sample = resample(trainingSet.getDataSet(), samplePercentage, sampleWithReplacement, seed + i);
 
 			System.out.println("\t\tBase Classifier " + i + ": " + sample.numInstances() + "/"
@@ -207,7 +209,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 			Class<? extends IMIMLClassifier> clsClass = 
 					(Class <? extends IMIMLClassifier>) Class.forName(clsName);
 			
-			this.baseLearner = (MultiLabelLearner) clsClass.newInstance();
+			this.baseLearner = clsClass.newInstance();
 			//Configure the classifier
 			if(this.baseLearner instanceof MIMLClassifier)
 				((IConfiguration) this.baseLearner).configure(configuration.subset("baseLearner"));

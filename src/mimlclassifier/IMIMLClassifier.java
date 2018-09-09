@@ -18,10 +18,13 @@ package mimlclassifier;
 import java.io.Serializable;
 
 import data.MIMLInstances;
+import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import weka.core.Instance;
+import weka.core.SerializedObject;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Common interface for MIML classifiers.
  *
@@ -30,7 +33,7 @@ import weka.core.Instance;
  * @author Eva Gigaja
  * @version 20180619
  */
-public interface IMIMLClassifier extends Serializable{
+public interface IMIMLClassifier extends MultiLabelLearner, Serializable{
 
 	
 	/**
@@ -62,5 +65,12 @@ public interface IMIMLClassifier extends Serializable{
  	 * 			True to show debug information, False not to.
  	 */
     public void setDebug(boolean debug);
+    
+    
+	/* (non-Javadoc)
+	 * @see mulan.classifier.MultiLabelLearner#makeCopy()
+	 */
+	public IMIMLClassifier  makeCopy() throws Exception;
+	
 }
 

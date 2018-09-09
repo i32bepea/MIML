@@ -30,6 +30,7 @@ import weka.core.Instances;
 import weka.core.SerializedObject;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Abstract class for a MIMLClassifier.
  * 
@@ -41,7 +42,7 @@ import weka.core.SerializedObject;
  *
  *
  */
-public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier, MultiLabelLearner {
+public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier {
 
 	
 	/**  for serialization. */
@@ -154,8 +155,11 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier,
 	}
 
 
-	public MultiLabelLearner  makeCopy() throws Exception {
-		return (MultiLabelLearner) new SerializedObject(this).getObject();
+	/* (non-Javadoc)
+	 * @see mimlclassifier.IMIMLClassifier#makeCopy()
+	 */
+	public IMIMLClassifier  makeCopy() throws Exception {
+		return (IMIMLClassifier) new SerializedObject(this).getObject();
 	}
 
 	/**
