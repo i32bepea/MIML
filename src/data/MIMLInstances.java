@@ -272,7 +272,7 @@ public class MIMLInstances extends MultiLabelInstances {
 	 * @return MultiLabelInstances
 	 */
 	public MultiLabelInstances getMLDataSet() {
-		return (MultiLabelInstances) this;
+		return this;
 	}
 
 }

@@ -26,6 +26,7 @@ import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.data.MultiLabelInstances;
 import transformation.mimlTOml.MIMLtoML;
+import weka.core.Instance;
 
 /**
  * 
@@ -87,7 +88,8 @@ public class MIMLClassifierML extends MIMLClassifier{
 	 */
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag bag) throws Exception, InvalidDataException {
-		return baseClassifier.makePrediction(bag);
+		Instance instance = transformMethod.transformInstance(bag);
+		return baseClassifier.makePrediction(instance);
 	}
 
 	/* (non-Javadoc)
@@ -135,7 +137,7 @@ public class MIMLClassifierML extends MIMLClassifier{
 					obj[i] =   configuration.getByte("multiLabelClassifier.parameters.valueParameters("+i+")");
 					
 				}
-				//Aï¿½adir el resto:long,short,boolean, ....,
+				//Añadir el resto:long,short,boolean, ....,
 				else{
 //					cArg[i] = Class.forName(configuration.getString("multiLabelClassifier.parameters.classParameters("+i+")")); 
 //					obj[i] =  configuration.getString("multiLabelClassifier.parameters.valueParameters("+i+")");

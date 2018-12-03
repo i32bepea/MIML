@@ -105,6 +105,7 @@ public abstract class MIMLReport implements IReport, IConfiguration {
 	/**
 	 * Save in a file the specified report.
 	 */
+	@Override
 	public void saveReport(String report) throws FileNotFoundException {
 		
 		try (PrintWriter out = new PrintWriter(filename)) {

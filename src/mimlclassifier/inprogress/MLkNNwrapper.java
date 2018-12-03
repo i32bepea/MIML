@@ -67,7 +67,7 @@ public class MLkNNwrapper extends MIMLClassifier{
 	@Override
 	protected MultiLabelOutput makePredictionInternal(Bag instance) throws Exception, InvalidDataException {
 		
-		Instance bagAsInstance = (Instance) instance;
+		Instance bagAsInstance = instance;
 		MultiLabelOutput predictions = classifier.makePrediction(bagAsInstance);
 		
 		return predictions;

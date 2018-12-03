@@ -91,6 +91,7 @@ public class ArithmeticTransformation extends MIMLtoML {
 		return new MultiLabelInstances(newData, dataset.getLabelsMetaData());
 	}
 
+	@Override
 	public MultiLabelInstances transformDataset(MIMLInstances dataset) throws Exception {
 		
 		this.dataset = dataset;

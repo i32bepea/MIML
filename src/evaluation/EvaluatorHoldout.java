@@ -78,7 +78,7 @@ public class EvaluatorHoldout implements IConfiguration, IEvaluator<Evaluation> 
 		try {
 			classifier.build(trainData);
 			System.out.println("Getting evaluation results");
-			evaluation = eval.evaluate((MultiLabelLearner) classifier, testData, trainData);
+			evaluation = eval.evaluate(classifier, testData, trainData);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

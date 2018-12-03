@@ -82,7 +82,7 @@ public class ConfigLoader {
 		Class<? extends IMIMLClassifier> clsClass = 
 				(Class <? extends IMIMLClassifier>) Class.forName(clsName);
 		
-		classifier = (MIMLClassifier) clsClass.newInstance();
+		classifier = clsClass.newInstance();
 		//Configure the classifier
 		if(classifier instanceof IMIMLClassifier)
 			((IConfiguration) classifier).configure(configuration.subset("classifier"));
@@ -108,7 +108,7 @@ public class ConfigLoader {
 		Class<? extends IEvaluator> evalClass = 
 				(Class <? extends IEvaluator>) Class.forName(evalName);
 		
-		evaluator = (IEvaluator) evalClass.newInstance();
+		evaluator = evalClass.newInstance();
 		//Configure the evaluator
 		if(evaluator instanceof IEvaluator)
 			((IConfiguration) evaluator).configure(configuration.subset("evaluator"));
@@ -135,7 +135,7 @@ public class ConfigLoader {
 		Class<? extends IReport> clsClass = 
 				(Class <? extends IReport>) Class.forName(reportName);
 		
-		report = (IReport) clsClass.newInstance();
+		report = clsClass.newInstance();
 		
 		//Configure the report
 		if(report instanceof IReport)

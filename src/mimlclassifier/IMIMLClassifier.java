@@ -21,7 +21,6 @@ import data.MIMLInstances;
 import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import weka.core.Instance;
-import weka.core.SerializedObject;
 
 
 // TODO: Auto-generated Javadoc
@@ -45,6 +44,7 @@ public interface IMIMLClassifier extends MultiLabelLearner, Serializable{
 	 * 
 	 * @throws Exception the exception
 	 */
+	@Override
 	public MultiLabelOutput makePrediction(Instance instance) throws Exception;
 	
 	
@@ -64,12 +64,14 @@ public interface IMIMLClassifier extends MultiLabelLearner, Serializable{
  	 * @param debug 
  	 * 			True to show debug information, False not to.
  	 */
-    public void setDebug(boolean debug);
+    @Override
+	public void setDebug(boolean debug);
     
     
 	/* (non-Javadoc)
 	 * @see mulan.classifier.MultiLabelLearner#makeCopy()
 	 */
+	@Override
 	public IMIMLClassifier  makeCopy() throws Exception;
 	
 }

@@ -357,6 +357,7 @@ public class MIMLStatistics {
 	 * 
 	 */
 	//TODO debe revisarse este método
+	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		

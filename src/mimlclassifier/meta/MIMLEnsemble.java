@@ -26,7 +26,6 @@ import data.MIMLInstances;
 import mimlclassifier.IMIMLClassifier;
 import mimlclassifier.MIMLClassifier;
 import mulan.classifier.InvalidDataException;
-import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -147,7 +146,7 @@ public class MIMLEnsemble extends MIMLClassifier {
 			if (useConfidences) {
 				confidence[j] = sumConf[j] / numClassifiers;
 			} else {
-				confidence[j] = sumVotes[j] / (double) numClassifiers;
+				confidence[j] = sumVotes[j] / numClassifiers;
 			}
 		}
 

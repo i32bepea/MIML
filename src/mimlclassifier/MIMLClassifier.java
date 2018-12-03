@@ -21,7 +21,6 @@ import data.Bag;
 import data.MIMLInstances;
 import mulan.classifier.InvalidDataException;
 import mulan.classifier.ModelInitializationException;
-import mulan.classifier.MultiLabelLearner;
 import mulan.classifier.MultiLabelOutput;
 import mulan.core.ArgumentNullException;
 import mulan.data.MultiLabelInstances;
@@ -91,6 +90,7 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier 
 	/* (non-Javadoc)
 	 * @see mulan.classifier.MultiLabelLearner#build(mulan.data.MultiLabelInstances)
 	 */
+	@Override
 	public final void build(MultiLabelInstances trainingSet) throws Exception {
 		
 		
@@ -112,6 +112,7 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier 
 	/* (non-Javadoc)
 	 * @see mimlclassifier.IMIMLClassifier#build(data.MIMLInstances)
 	 */
+	@Override
 	public final void build(MIMLInstances trainingSet) throws Exception {
 		
 				
@@ -158,6 +159,7 @@ public abstract class MIMLClassifier implements IConfiguration, IMIMLClassifier 
 	/* (non-Javadoc)
 	 * @see mimlclassifier.IMIMLClassifier#makeCopy()
 	 */
+	@Override
 	public IMIMLClassifier  makeCopy() throws Exception {
 		return (IMIMLClassifier) new SerializedObject(this).getObject();
 	}

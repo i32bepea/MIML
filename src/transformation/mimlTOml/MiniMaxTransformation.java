@@ -121,6 +121,7 @@ public class MiniMaxTransformation extends MIMLtoML {
 		return new MultiLabelInstances(newData, dataset.getLabelsMetaData());
 	}
 
+	@Override
 	public MultiLabelInstances transformDataset(MIMLInstances dataset) throws Exception {
 
 		this.dataset = dataset;
@@ -216,6 +217,7 @@ public class MiniMaxTransformation extends MIMLtoML {
 
 		return newInst;
 	}
+	@Override
 	protected void prepareTemplate() throws Exception {
 		int attrIndex = 0;
 

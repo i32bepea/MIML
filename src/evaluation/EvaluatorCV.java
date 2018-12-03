@@ -72,7 +72,7 @@ public class EvaluatorCV implements IConfiguration, IEvaluator<MultipleEvaluatio
 	public void runExperiment(IMIMLClassifier classifier) {
 		Evaluator eval = new Evaluator();
 		System.out.println("initializing cross validation");
-		evaluation = eval.crossValidate((MultiLabelLearner) classifier, data, numFolds);
+		evaluation = eval.crossValidate(classifier, data, numFolds);
 	}
 
 	/* (non-Javadoc)

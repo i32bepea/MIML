@@ -116,7 +116,7 @@ public abstract class MIMLtoML implements Serializable{
 
 		template = bags.attribute(1).relation().stringFreeStructure();
 		// insert a bag label attribute at the begining
-		Attribute bagLabel = (Attribute) bags.attribute(0);
+		Attribute bagLabel = bags.attribute(0);
 		template.insertAttributeAt(bagLabel, 0);
 
 		// Insert labels as attributes in the dataset
