@@ -51,8 +51,6 @@ public class MIMLtoMLTransformation {
 		
 		String arffFileName = Utils.getOption("f", args);
 		String xmlFileName = Utils.getOption("x", args);
-		
-		String name = arffFileName.split("\\.")[0];
 
 		// Parameter checking
 		if (arffFileName.isEmpty()) {
@@ -70,8 +68,8 @@ public class MIMLtoMLTransformation {
 		MIMLInstances mimlDataSet = new MIMLInstances(arffFileName, xmlFileName);
 
 		System.out.println("=============Arithmetic=====================");
-		String arffFileResultAri = name + "ResultAri.arff";
-		String xmlFileResultAri = name + "ResultAri.xml";
+		String arffFileResultAri = "data" + File.separator + "toyResultAri.arff";
+		String xmlFileResultAri = "data" + File.separator + "toyResultAri.xml";
 
 		ArithmeticTransformation ari = new ArithmeticTransformation(mimlDataSet);
 		// Transforms a single instance
@@ -82,8 +80,8 @@ public class MIMLtoMLTransformation {
 		MLSave.saveXml(result, xmlFileResultAri);
 
 		System.out.println("=============Geometric=====================");
-		String arffFileResultGeo = name + "ResultGeo.arff";
-		String xmlFileResultGeo = name + "ResultGeo.xml";
+		String arffFileResultGeo = "data" + File.separator + "toyResultGeo.arff";
+		String xmlFileResultGeo = "data" + File.separator + "toyResultGeo.xml";
 
 		GeometricTransformation geo = new GeometricTransformation(mimlDataSet);
 		// Transforms a single instance
@@ -94,8 +92,8 @@ public class MIMLtoMLTransformation {
 		MLSave.saveXml(result, xmlFileResultGeo);
 
 		System.out.println("=============MinMax=====================");
-		String arffFileResultMinMax = name + "ResultMinMax.arff";
-		String xmlFileResultMinMax = name + "ResultMinMax.xml";
+		String arffFileResultMinMax = "data" + File.separator + "toyResultMinMax.arff";
+		String xmlFileResultMinMax = "data" + File.separator + "toyResultMinMax.xml";
 
 		MiniMaxTransformation miniMax = new MiniMaxTransformation(mimlDataSet);
 		// Transforms a single instance

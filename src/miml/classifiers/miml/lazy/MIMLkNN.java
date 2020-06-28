@@ -145,7 +145,9 @@ public class MIMLkNN extends MIMLClassifier {
 
 	/*
 	 * (non-Javadoc)
-	 * @see miml.classifiers.miml.MIMLClassifier#makePredictionInternal(miml.data.MIMLBag)
+	 * 
+	 * @see miml.classifiers.miml.MIMLClassifier#makePredictionInternal(miml.data.
+	 * MIMLBag)
 	 */
 	@Override
 	protected MultiLabelOutput makePredictionInternal(MIMLBag instance) throws Exception, InvalidDataException {
@@ -416,13 +418,14 @@ public class MIMLkNN extends MIMLClassifier {
 	}
 
 	/**
-	 * Decide if a bag belong to a specified label.
+	 * Classifier that decides if a example belong to a specified label. It is going
+	 * to depend of the label weights for that bag and the labels' record of bag's
+	 * neighbors.
 	 *
-	 * @param weights The weights correspondent to each label.
-	 * 
+	 * @param weights The weights correspondent to the label.
 	 * @param record  The labels' record of bag's neighbor to be predicted.
 	 * 
-	 * @return True, if belong, false if not.
+	 * @return True, if belong to a determinated class, false if not.
 	 */
 	protected boolean linearClassifier(double[] weights, double[] record) {
 
@@ -431,7 +434,7 @@ public class MIMLkNN extends MIMLClassifier {
 		for (int i = 0; i < numLabels; ++i)
 			decision += weights[i] * record[i];
 
-		return (decision > 0.0) ? true : false;
+		return (decision > 0.3) ? true : false;
 	}
 
 	/**

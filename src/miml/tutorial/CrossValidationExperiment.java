@@ -57,16 +57,6 @@ public class CrossValidationExperiment {
 
 		String arffFileName = Utils.getOption("f", args);
 		String xmlFileName = Utils.getOption("x", args);
-		
-		// Parameter checking
-		if (arffFileName.isEmpty()) {
-			System.out.println("Arff pathName must be specified.");
-			showUse();
-		}
-		if (xmlFileName.isEmpty()) {
-			System.out.println("Xml pathName must be specified.");
-			showUse();
-		}
 
 		// Loads the dataset
 		System.out.println("Loading the dataset...");

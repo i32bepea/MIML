@@ -16,6 +16,7 @@
 package miml.report;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.configuration2.Configuration;
@@ -43,14 +44,14 @@ public class BaseMIMLReport extends MIMLReport {
 	/**
 	 * Basic constructor to initialize the report.
 	 *
-	 * @param measures	The list of selected measures which is going to be shown in
+	 * @param measures The list of selected measures which is going to be shown in
 	 *                 the report.
-	 * @param filename	The filename where the report's will be saved.
-	 * @param std     	Whether the standard deviation of measures will be shown or
+	 * @param filename The filename where the report's will be saved.
+	 * @param std      Whether the standard deviation of measures will be shown or
 	 *                 not (only valid for cross-validation evaluator).
-	 * @param labels  	Whether the measures for each label will be shown (only valid
+	 * @param labels   Whether the measures for each label will be shown (only valid
 	 *                 for Macros Average measures).
-	 * @param header	Whether the header will be shown.
+	 * @param header   Whether the header will be shown.
 	 */
 	public BaseMIMLReport(List<String> measures, String filename, boolean std, boolean labels, boolean header) {
 		super();
@@ -136,13 +137,14 @@ public class BaseMIMLReport extends MIMLReport {
 					}
 				}
 			}
+			sb.setLength(sb.length() - 1);
 			sb.append(System.getProperty("line.separator"));
 		}
 
 		if (ConfigParameters.getIsDegenerative()) {
 			// Write header
 			sb.append(ConfigParameters.getAlgorirthmName() + "," + ConfigParameters.getClassifierName() + ","
-					+ ConfigParameters.getTransformMethod() + "," + ConfigParameters.getDataFileName() + ","
+					+ ConfigParameters.getTransformationMethod() + "," + ConfigParameters.getDataFileName() + ","
 					+ ConfigParameters.getConfigFileName() + "," + evaluator.getAvgTrainTime() + ",");
 		} else {
 			// Write header
@@ -189,7 +191,7 @@ public class BaseMIMLReport extends MIMLReport {
 			}
 
 		}
-
+		sb.setLength(sb.length() - 1);
 		sb.append(System.getProperty("line.separator"));
 		return sb.toString();
 	}
@@ -209,6 +211,10 @@ public class BaseMIMLReport extends MIMLReport {
 		StringBuilder sb = new StringBuilder();
 		String measureName;
 
+		if(this.std) {
+			System.out.println("[WARNING]: standardDeviation is setted true, but in holdout evaluation is not possible calculate std value");
+		}
+		
 		// All evaluator measures
 		List<Measure> measures = evaluationHoldout.getMeasures();
 		// Measures selected by user
@@ -237,13 +243,14 @@ public class BaseMIMLReport extends MIMLReport {
 					}
 				}
 			}
+			sb.setLength(sb.length() - 1);
 			sb.append(System.getProperty("line.separator"));
 		}
 
 		if (ConfigParameters.getIsDegenerative()) {
 			// Write header
 			sb.append(ConfigParameters.getAlgorirthmName() + "," + ConfigParameters.getClassifierName() + ","
-					+ ConfigParameters.getTransformMethod() + "," + ConfigParameters.getDataFileName() + ","
+					+ ConfigParameters.getTransformationMethod() + "," + ConfigParameters.getDataFileName() + ","
 					+ ConfigParameters.getConfigFileName() + "," + evaluator.getTrainTime() + ","
 					+ evaluator.getTestTime() + ",");
 		} else {
@@ -266,6 +273,7 @@ public class BaseMIMLReport extends MIMLReport {
 
 		}
 
+		sb.setLength(sb.length() - 1);
 		sb.append(System.getProperty("line.separator"));
 		return sb.toString();
 	}
@@ -295,11 +303,12 @@ public class BaseMIMLReport extends MIMLReport {
 		if (this.header) {
 			sb.append("Algorithm: " + ConfigParameters.getAlgorirthmName() + System.getProperty("line.separator"));
 			sb.append("Classifier: " + ConfigParameters.getClassifierName() + System.getProperty("line.separator"));
-			sb.append("Transform method: " + ConfigParameters.getTransformMethod() + System.getProperty("line.separator"));
+			sb.append("Transform method: " + ConfigParameters.getTransformationMethod()
+					+ System.getProperty("line.separator"));
 			sb.append("Dataset: " + ConfigParameters.getDataFileName() + System.getProperty("line.separator"));
 			sb.append("Config File: " + ConfigParameters.getConfigFileName() + System.getProperty("line.separator"));
 		}
-		
+
 		sb.append("Train time avg (ms): " + evaluator.getAvgTrainTime() + System.getProperty("line.separator"));
 
 		if (this.std) {
@@ -358,6 +367,10 @@ public class BaseMIMLReport extends MIMLReport {
 	 */
 	protected String holdoutToString(EvaluatorHoldout evaluator) throws Exception {
 
+		if(this.std) {
+			System.out.println("[WARNING]: standardDeviation is setted true, but in holdout evaluation is not possible  to calculate std value");
+		}
+		
 		Evaluation evaluationHoldout = evaluator.getEvaluation();
 		MIMLInstances data = evaluator.getData();
 		StringBuilder sb = new StringBuilder();
@@ -371,11 +384,12 @@ public class BaseMIMLReport extends MIMLReport {
 		if (this.header) {
 			sb.append("Algorithm: " + ConfigParameters.getAlgorirthmName() + System.getProperty("line.separator"));
 			sb.append("Classifier: " + ConfigParameters.getClassifierName() + System.getProperty("line.separator"));
-			sb.append("Transform method: " + ConfigParameters.getTransformMethod() + System.getProperty("line.separator"));
+			sb.append("Transform method: " + ConfigParameters.getTransformationMethod()
+					+ System.getProperty("line.separator"));
 			sb.append("Dataset: " + ConfigParameters.getDataFileName() + System.getProperty("line.separator"));
 			sb.append("Config File: " + ConfigParameters.getConfigFileName() + System.getProperty("line.separator"));
 		}
-		
+
 		sb.append("Train time (ms): " + evaluator.getTrainTime() + System.getProperty("line.separator"));
 		sb.append("Test time (ms): " + evaluator.getTestTime() + System.getProperty("line.separator"));
 
@@ -434,19 +448,23 @@ public class BaseMIMLReport extends MIMLReport {
 	 */
 	@Override
 	public void configure(Configuration configuration) {
+		
 		this.filename = configuration.getString("fileName");
-		this.std = configuration.getBoolean("standardDeviation", true);
+		this.std = configuration.getBoolean("standardDeviation", false);
 		this.header = configuration.getBoolean("header", true);
+		
 		this.labels = configuration.getBoolean("measures[@perLabel]", true);
 
 		int measuresLength = configuration.getList("measures.measure").size();
 
-		if (measuresLength > 0)
+		if (measuresLength > 0) {
 			measures = new ArrayList<String>();
 
-		for (int i = 0; i < measuresLength; ++i) {
-			measures.add(configuration.getString("measures.measure(" + i + ")"));
+			for (int i = 0; i < measuresLength; ++i) {
+				measures.add(configuration.getString("measures.measure(" + i + ")"));
+			}
 		}
+
 	}
 
 }

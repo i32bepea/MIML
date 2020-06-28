@@ -25,8 +25,8 @@ import org.apache.commons.configuration2.Configuration;
 import miml.classifiers.miml.IMIMLClassifier;
 import miml.core.ConfigParameters;
 import miml.core.IConfiguration;
+import miml.core.Utils;
 import miml.data.MIMLInstances;
-import miml.data.Utils;
 import mulan.evaluation.Evaluation;
 import mulan.evaluation.Evaluator;
 
@@ -185,8 +185,8 @@ public class EvaluatorHoldout implements IConfiguration, IEvaluator<Evaluation> 
 
 		String arffFileTrain = configuration.subset("data").getString("trainFile");
 		String xmlFileName = configuration.subset("data").getString("xmlFile");
-
 		String arffFileTest = configuration.subset("data").getString("testFile");
+		seed = configuration.getInt("seed", 1);
 
 		try {
 

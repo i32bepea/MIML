@@ -58,24 +58,6 @@ public class HoldoutExperiment {
 		String arffFileNameTrain = Utils.getOption("t", args);
 		String arffFileNameTest = Utils.getOption("y", args);
 
-		// Parameter checking
-		if (arffFileName.isEmpty()) {
-			System.out.println("Arff pathName must be specified.");
-			showUse();
-		}
-		if (xmlFileName.isEmpty()) {
-			System.out.println("Xml pathName must be specified.");
-			showUse();
-		}
-		if (arffFileNameTrain.isEmpty()) {
-			System.out.println("Traint arff pathName must be specified.");
-			showUse();
-		}
-		if (arffFileNameTest.isEmpty()) {
-			System.out.println("Test pathName must be specified.");
-			showUse();
-		}
-		
 		// Loads the dataset
 		System.out.println("Loading datasets...");
 		MIMLInstances mimlDataSet = new MIMLInstances(arffFileName, xmlFileName);
