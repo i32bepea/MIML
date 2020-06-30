@@ -33,7 +33,7 @@ import weka.core.Instance;
 
 /**
  * <p>
- * Class implementing the degenerative algorithm for MIML data to solve it with
+ * Class implementing the transformation algorithm for MIML data to solve it with
  * ML learning. For more information, see <em>Zhou, Z. H., &#38; Zhang, M. L.
  * (2007). Multi-instance multi-label learning with application to scene
  * classification. In Advances in neural information processing systems (pp.
@@ -158,7 +158,7 @@ public class MIMLClassifierToML extends MIMLClassifier {
 
 		ConfigParameters.setClassifierName(classifierName);
 		ConfigParameters.setTransformationMethod(transformerName);
-		ConfigParameters.setIsDegenerative(true);
+		ConfigParameters.setIsTransformation(true);
 	}
 
 }

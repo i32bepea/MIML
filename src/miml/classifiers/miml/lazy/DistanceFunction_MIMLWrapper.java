@@ -92,17 +92,6 @@ public class DistanceFunction_MIMLWrapper implements Serializable, DistanceFunct
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see weka.core.OptionHandler#listOptions()
-	 */
-	@Override
-	public Enumeration<?> listOptions() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see weka.core.OptionHandler#setOptions(java.lang.String[])
 	 */
 	@Override
@@ -228,6 +217,17 @@ public class DistanceFunction_MIMLWrapper implements Serializable, DistanceFunct
 	public void update(Instance ins) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see weka.core.DistanceFunction#listOptions()
+	 */
+	@Override
+	public Enumeration<?> listOptions() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
